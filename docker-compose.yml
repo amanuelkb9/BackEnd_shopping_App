@@ -1,0 +1,45 @@
+services:
+  postgres_db:
+    image: postgres
+    environment:
+      POSTGRES_DB: final_project
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  shopmart-backend:
+    depends_on:
+      - postgres_db
+    image: sekayasin/shopmart-backend:v1
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_JSON: '{
+        "spring.datasource.url":"jdbc:postgresql://postgres_db:5432/final_project",
+        "spring.datasource.username":"postgres",
+        "spring.datasource.password":"1",
+        "spring.jpa.hibernate.ddl-auto":"create-drop",
+        "spring.jpa.show-sql":"true",
+        "spring.jpa.properties.hibernate.format_sql":"true",
+        "spring.jpa.properties.hibernate.dialect":"org.hibernate.dialect.PostgreSQLDialect",
+        "spring.jpa.hibernate.use-new-id-generator-mappings":"false",
+        "server.error.include-message":"always"
+      }'
+
+  shopmart-frontend:
+    depends_on:
+      - postgres_db
+      - shopmart-backend
+    image: sekayasin/shopmart-frontend:v1
+    restart: on-failure
+    ports:
+      - 80:80
+
