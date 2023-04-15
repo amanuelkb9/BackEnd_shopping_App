@@ -13,7 +13,7 @@ import edu.miu.shopmartbackend.util.ListMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +23,6 @@ public class SearchServiceImpl implements SearchService {
     private final UserRepo userRepo;
     private final ProductRepo productRepo;
     private final OrderRepo orderRepo;
-
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     ListMapper<User, UserDto> listMapperToDto;
