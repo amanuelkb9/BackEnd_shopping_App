@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -56,8 +57,12 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public void updateProduct(Product product, long id) {
-        Product toBeUpdated =modelMapper.map (productRepo.findById(id).get(), Product.class);
+    public void updateProduct(ProductDto productDto, long id) {
+        Product product=modelMapper.map(productDto,Product.class);
+        Product toBeUpdated =productRepo.findById(id).orElse(null);
+        toBeUpdated.setProductName(product.getProductName());
+        toBeUpdated.setDescription(product.getDescription());
+        toBeUpdated.setPrice(product.getPrice());
         productRepo.save(toBeUpdated);
     }
 

@@ -8,6 +8,7 @@ import edu.miu.shopmartbackend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +58,11 @@ public class UserController {
     public void addRoleToUser(@RequestBody RoleToUserDto roleToUserDto) {
         System.out.println("add role...........");
         userService.addRoleToUser(roleToUserDto.getUsername(), roleToUserDto.getRole());
+    }
+    @PostMapping("/addUser")
+    public ResponseEntity<?> registerUser(UserDto userDto){
+        UserDto userToregistered=userService.registerUser(userDto);
+        return new ResponseEntity(userToregistered, HttpStatus.CREATED);
     }
 }
 
