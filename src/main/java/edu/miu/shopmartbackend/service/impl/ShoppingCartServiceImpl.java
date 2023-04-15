@@ -107,7 +107,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCart editQuantity(long userId, String productName, Integer number) {
-        ShoppingCart shoppingCart = userRepo.getUserById(userId).getShoppingCart();
+//        ShoppingCart shoppingCart = userRepo.getUserById(userId).getShoppingCart();
+//        shoppingCart.getProducts().stream().map(product -> product.getProductName())
+//                .filter(product -> product.equals(productName)).collect(System)
+
 
         return null;
     }

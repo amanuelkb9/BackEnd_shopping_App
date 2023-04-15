@@ -5,7 +5,7 @@ import edu.miu.shopmartbackend.model.dto.ProductDto;
 import edu.miu.shopmartbackend.model.dto.UserDto;
 
 import edu.miu.shopmartbackend.service.SearchService;
-import edu.miu.shopmartbackend.service.UserService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ public class SearchController {
     private final SearchService searchService;
 
 
-    @GetMapping
+    @GetMapping("/users")
     public List<UserDto> getAllUsers() {
         return searchService.getAllUsers();
     }
@@ -39,17 +39,17 @@ public class SearchController {
         return searchService.getUserByUsername(username);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public UserDto getUserById(@PathVariable long id) {
         return searchService.getUserById(id);
     }
 
-    @GetMapping
+    @GetMapping("/products")
     public List<ProductDto> getAllProducts(){
         return searchService.getAllProducts();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/search/product/{id}")
     public ProductDto getProductById(@PathVariable("id") long id){
         return searchService.getProductById(id);
     }
