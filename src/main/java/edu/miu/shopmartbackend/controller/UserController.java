@@ -39,6 +39,10 @@ public class UserController {
     UserDto approveSeller( @PathVariable long seller_id){
         return userService.approveSeller(seller_id);
     }
+    @PatchMapping("/{buyer_id}/approvebuyer")
+    UserDto approveBuyer( @PathVariable long buyer_id){
+        return userService.approveBuyer(buyer_id);
+    }
 
 // !!!!!!!!!!!!!!!!!
     @ResponseStatus(HttpStatus.OK)
@@ -61,8 +65,11 @@ public class UserController {
     }
     @PostMapping("/addUser")
     public ResponseEntity<?> registerUser(UserDto userDto){
-        UserDto userToregistered=userService.registerUser(userDto);
-        return new ResponseEntity(userToregistered, HttpStatus.CREATED);
+        System.out.println(userDto);
+        System.out.println("111111111111111111111111111");
+        userService.registerUser(userDto);
+        System.out.println(userDto);
+        return new ResponseEntity(userDto, HttpStatus.CREATED);
     }
 }
 

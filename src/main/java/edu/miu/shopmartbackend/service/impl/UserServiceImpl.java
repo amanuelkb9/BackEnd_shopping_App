@@ -147,12 +147,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDto registerUser(UserDto userDto) {
+    public void registerUser(UserDto userDto) {
+        System.out.println(userDto);
+        System.out.println("seervicevkgkjefkewfwkufufkufkufugfugfuk2gfu2gfugfugkjgkfglwfhfghw/fltqwofyweyfwye");
         System.out.println(userDto.toString());
         User user = modelMapper.map(userDto, User.class);
+        System.out.println(userDto);
 
         userRepo.save(user);
-        return userDto;
+//        return userDto;
+    }
+
+    @Override
+    public UserDto approveBuyer(long id) {
+        User buyer = userRepo.getUserById(id);
+        buyer.setAproved(true);
+        return modelMapper.map(userRepo.save(buyer), UserDto.class);
     }
 }
 
