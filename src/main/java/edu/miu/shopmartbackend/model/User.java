@@ -25,7 +25,6 @@ public class User {
 
     @Email(message="{errors.invalid_email}")
     private String email;
-    private int points;
     private boolean isAproved;
     private boolean isFollowing;
 

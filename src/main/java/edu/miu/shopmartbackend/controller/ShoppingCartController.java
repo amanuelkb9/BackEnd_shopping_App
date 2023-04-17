@@ -11,21 +11,25 @@ public class ShoppingCartController {
 
     @Autowired
     ShoppingCartService shoppingCartService;
+    @PostMapping("/{buyer_id}")
+    public ShoppingCart createShoppingCart(@PathVariable long buyer_id){
+        return shoppingCartService.createShoppingCart(buyer_id);
+    }
 
-//    @GetMapping("/{cart_id}/cart")
-//    public ShoppingCart getShoppingCartById(@PathVariable long cart_id){
-//        return shoppingCartService.getShoppingCartById(cart_id);
-//    }
+    @GetMapping("/{cart_id}/cart")
+    public ShoppingCart getShoppingCartById(@PathVariable long cart_id){
+        return shoppingCartService.getShoppingCartById(cart_id);
+    }
 
     @PostMapping("/{buyer_id}/{product_id}")
     public ShoppingCart addProductToShoppingCart(@PathVariable long buyer_id, @PathVariable long product_id){
        return shoppingCartService.addProductToShoppingCart(buyer_id, product_id);
     }
 
-//    @DeleteMapping("/{buyer_id}")
-//    public void deleteShoppingCart(@PathVariable long buyer_id){
-//        shoppingCartService.deleteShoppingCart(buyer_id);
-//    }
+    @DeleteMapping("/{buyer_id}")
+    public void deleteShoppingCart(@PathVariable long buyer_id){
+        shoppingCartService.deleteShoppingCart(buyer_id);
+    }
 
     @DeleteMapping("/{buyer_id}/{product_id}")
     public ShoppingCart deleteProductByIdFromCart(@PathVariable long buyer_id, @PathVariable long product_id){
