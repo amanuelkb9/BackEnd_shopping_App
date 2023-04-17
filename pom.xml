@@ -11,8 +11,8 @@
     <groupId>edu.miu</groupId>
     <artifactId>shopmart-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>shopmart-backend</name>
-    <description>shopmart-backend</description>
+    <name>Backend_shopping_App</name>
+    <description>Backend_shopping_App</description>
     <properties>
         <java.version>11</java.version>
     </properties>
