@@ -145,5 +145,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new RuntimeException("Refresh token is missing");
         }
     }
+
+    @Override
+    public UserDto approveBuyer(long buyer_id) {
+        User buyer = modelMapper.map(userRepo.getUserById(buyer_id), User.class);
+        buyer.setAproved(true);
+        return modelMapper.map(userRepo.save(buyer), UserDto.class);
+    }
 }
 
