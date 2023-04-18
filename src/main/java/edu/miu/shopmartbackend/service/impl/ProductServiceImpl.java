@@ -26,8 +26,6 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     OrderRepo orderRepo;
 
-
-
     @Autowired
     UserRepo userRepo;
 
@@ -44,7 +42,6 @@ public class ProductServiceImpl implements ProductService {
          productRepo.save(product);      }
 
 
-
     @Override
     public void deleteProduct(long id) {
         Product product = modelMapper.map(productRepo.findById(id).get(), Product.class);
@@ -53,8 +50,6 @@ public class ProductServiceImpl implements ProductService {
         }
             productRepo.deleteById(id);
       }
-
-
 
     @Override
     public void updateProduct(ProductDto productDto, long id) {

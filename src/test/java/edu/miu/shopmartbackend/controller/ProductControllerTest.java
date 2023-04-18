@@ -77,11 +77,11 @@ class ProductControllerTest {
     }
 
     /**
-     * Method under test: {@link ProductController#updateProduct(Product, long)}
+     * Method under test:
      */
     @Test
     void testUpdateProduct() throws Exception {
-        doNothing().when(productService).updateProduct((Product) any(), anyLong());
+        doNothing().when(productService).updateProduct((ProductDto) any(), anyLong());
 
         Address address = new Address();
         address.setCity("Oxford");
@@ -104,12 +104,12 @@ class ProductControllerTest {
         user.setBillingAddress(address);
         user.setEmail("jane.doe@example.org");
         user.setFirstname("Jane");
-        user.setFollowing(true);
+
         user.setId(1L);
         user.setLastname("Doe");
         user.setOrders(new ArrayList<>());
         user.setPassword("iloveyou");
-        user.setPoints(1);
+        
         user.setProducts(new ArrayList<>());
         user.setRoles(new ArrayList<>());
         user.setShippingAddress(address1);

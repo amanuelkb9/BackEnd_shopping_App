@@ -66,7 +66,7 @@ public class UserController {
     @PostMapping("/addUser")
     public ResponseEntity<?> registerUser(UserDto userDto){
         System.out.println(userDto);
-        System.out.println("111111111111111111111111111");
+
         userService.registerUser(userDto);
         System.out.println(userDto);
         return new ResponseEntity(userDto, HttpStatus.CREATED);

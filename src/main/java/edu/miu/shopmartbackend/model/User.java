@@ -26,7 +26,7 @@ public class User {
     @Email(message="{errors.invalid_email}")
     private String email;
     private boolean isAproved;
-    private boolean isFollowing;
+
 
 
     @Embedded
