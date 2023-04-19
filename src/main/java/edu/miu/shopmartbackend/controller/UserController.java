@@ -8,6 +8,7 @@ import edu.miu.shopmartbackend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,10 @@ public class UserController {
     UserDto approveSeller( @PathVariable long seller_id){
         return userService.approveSeller(seller_id);
     }
+    @PatchMapping("/{buyer_id}/approvebuyer")
+    UserDto approveBuyer( @PathVariable long buyer_id){
+        return userService.approveBuyer(buyer_id);
+    }
 
     @PatchMapping("/{buyer_id}/approvebuyer")
     UserDto approveBuyer( @PathVariable long buyer_id){
@@ -62,6 +67,14 @@ public class UserController {
     public void addRoleToUser(@RequestBody RoleToUserDto roleToUserDto) {
         System.out.println("add role...........");
         userService.addRoleToUser(roleToUserDto.getUsername(), roleToUserDto.getRole());
+    }
+    @PostMapping("/addUser")
+    public ResponseEntity<?> registerUser(UserDto userDto){
+        System.out.println(userDto);
+
+        userService.registerUser(userDto);
+        System.out.println(userDto);
+        return new ResponseEntity(userDto, HttpStatus.CREATED);
     }
 }
 

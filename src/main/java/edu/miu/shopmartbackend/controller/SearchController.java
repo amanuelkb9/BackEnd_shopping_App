@@ -49,7 +49,7 @@ public class SearchController {
         return searchService.getAllProducts();
     }
 
-    @GetMapping("/search/product/{id}")
+    @GetMapping("/product/{id}")
     public ProductDto getProductById(@PathVariable("id") long id){
         return searchService.getProductById(id);
     }

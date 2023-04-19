@@ -22,8 +22,6 @@ public class ProductController {
     @Autowired
     OrderService orderService;
 
-
-
     @Autowired
     UserService userService;
 
@@ -50,9 +48,9 @@ public class ProductController {
     }
 
 
-    @GetMapping("/products/{id}")
-    public void updateProduct(@RequestBody Product product, @PathVariable("id") long id) {
-        productService.updateProduct(product, id);
+    @PutMapping("/products/{id}")
+    public void updateProduct(@RequestBody ProductDto productDto, @PathVariable("id") long id) {
+        productService.updateProduct(productDto, id);
 
     }
 
