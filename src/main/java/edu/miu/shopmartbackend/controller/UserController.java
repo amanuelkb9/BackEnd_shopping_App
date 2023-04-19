@@ -44,6 +44,11 @@ public class UserController {
         return userService.approveBuyer(buyer_id);
     }
 
+    @PatchMapping("/{buyer_id}/approvebuyer")
+    UserDto approveBuyer( @PathVariable long buyer_id){
+        return userService.approveBuyer(buyer_id);
+    }
+
 // !!!!!!!!!!!!!!!!!
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/token/refresh")
