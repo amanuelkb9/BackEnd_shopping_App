@@ -147,8 +147,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDto approveBuyer(long buyer_id) {
-        User buyer = modelMapper.map(userRepo.getUserById(buyer_id), User.class);
+    public UserDto registerUser(UserDto userDto) {
+
+            User user = modelMapper.map(userDto, User.class);
+            userRepo.save(user);
+            return userDto;
+        }
+
+
+    @Override
+    public UserDto approveBuyer(long id) {
+        User buyer = userRepo.getUserById(id);
         buyer.setAproved(true);
         return modelMapper.map(userRepo.save(buyer), UserDto.class);
     }

@@ -36,9 +36,8 @@ The ADMIN user is required to approve the buyer/seller accounts before their sta
 
 ### Application Demo
 
-Link to [Backend Demo](https://youtu.be/btymqjU1BnU)
 
-Link to [Frontend Demo](https://youtu.be/izsszQLTSUM)
+
 
 ## Running the Dockerized Application
 
@@ -50,7 +49,7 @@ Both the backend and front-end docker images are referenced in the docker-compos
 
 The images are hosted on docker-hub repository, hence they will be pulled once the application is started as instructed below.
 
-- Clone this [repository](https://github.com/sekayasin/shopmart-backend)
+
 
     ```
     $ git clone git@github.com:sekayasin/shopmart-backend.git
@@ -84,7 +83,6 @@ This repo consist of the Backend code base built using SpringBoot
 
 #### Getting Started - Setting up and running the Backend codebase locally
 
-- Clone this [repository](https://github.com/sekayasin/shopmart-backend) 
 
     ```
     $ git clone git@github.com:sekayasin/shopmart-backend.git
@@ -142,13 +140,8 @@ The Backend is configured with these default accounts.
 
 | Name                   | ID     | Github username                               |
 |------------------------|--------|-----------------------------------------------|
-| Elilta Wondimu         | 113161 | [EliltaW](https://github.com/EliltaW)         |
-| Ghidei Weldehaimanot   | 113397 | [ghideibahta](https://github.com/ghideibahta) |
- | Raymond Antonio Broome | 613412 | [m0nd](https://github.com/m0nd)               |
- | Surafiel Hailu         | 112136 | [suraph-el](https://github.com/suraph-el)     |
- | Yasin Sekabira         | 613508 | [sekayasin](https://github.com/sekayasin)     |
+|   
 
-Special Thanks to Our Professor - [Muhyieddin Al-tarawneh](https://github.com/muhyidean) - WAA Professor | Project Manager. 
 
 
 
