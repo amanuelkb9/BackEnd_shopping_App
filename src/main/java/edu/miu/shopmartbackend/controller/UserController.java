@@ -65,7 +65,7 @@ public class UserController {
         userService.addRoleToUser(roleToUserDto.getUsername(), roleToUserDto.getRole());
     }
     @PostMapping("/addUser")
-    public ResponseEntity<?> registerUser(UserDto userDto){
+    public ResponseEntity<?> registerUser(@RequestBody UserDto userDto){
         System.out.println(userDto);
 
         userService.registerUser(userDto);
