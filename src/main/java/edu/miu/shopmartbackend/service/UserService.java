@@ -24,6 +24,12 @@ public interface UserService {
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
 
+<<<<<<<<< Temporary merge branch 1
+    UserDto registerUser(UserDto userDto);
 
     UserDto approveBuyer(long buyer_id);
+||||||||| 08421f4
+=========
+    UserDto approveBuyer(long buyer_id);
+>>>>>>>>> Temporary merge branch 2
 }
