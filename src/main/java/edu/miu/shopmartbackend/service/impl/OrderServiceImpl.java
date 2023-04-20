@@ -58,18 +58,23 @@ public class OrderServiceImpl implements OrderService {
         for (Product p : products) {
             totalPrice += p.getPrice();
         }
-
-        //
+        System.out.println("===================order set====================");
+        System.out.println(order);
         order.setTotalOrderPrice(totalPrice);
         orderRepo.save(order);
+        System.out.println("===============order saved1 ================");
 
         PaymentIntent paymentIntent = paymentService.handlePayment(paymentData);
         //invoiceService.payToOrder(totalPrice);
         if("succeeded".equals(paymentIntent.getStatus())){
 
             order.setOrderStatus(OrderStatus.PAID);
-            return modelMapper.map(orderRepo.save(order), OrderDto.class);
+            OrderDto orderDto = modelMapper.map(orderRepo.save(order), OrderDto.class);
+            System.out.println("==================Order saved2================");
+            System.out.println(order);
+            return orderDto;
         }else {
+            System.out.println("!!!!!!!!!!!!exception!!!!!!!!!!!!!!!");
             throw new IllegalStateException("Payment failed");
         }
 

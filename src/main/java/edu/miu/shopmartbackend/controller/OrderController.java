@@ -35,14 +35,6 @@ public class OrderController {
         return orderService.shipOrder(orderId);
     }
 
-//    @ResponseStatus(HttpStatus.OK)
-//    @PatchMapping("/{orderId}/deliver")
-//    OrderDto deliverOrder(@PathVariable("orderId") long orderId){
-//        return orderService.deliverOrder(orderId);
-//    }
-
-
-
 
     @ResponseStatus(HttpStatus.OK)
     @EmailSender
