@@ -1,5 +1,6 @@
 package edu.miu.shopmartbackend.controller;
 
+import com.stripe.exception.StripeException;
 import edu.miu.shopmartbackend.aspect.annotation.EmailSender;
 import edu.miu.shopmartbackend.model.dto.OrderDto;
 import edu.miu.shopmartbackend.service.OrderService;
@@ -22,9 +23,9 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.OK)
     @EmailSender
-    @PatchMapping("/{buyer_id}/create")
-    OrderDto createOrder(@PathVariable("buyer_id") long buyer_id){
-        return orderService.placeOrder(buyer_id);
+    @PatchMapping("/create")
+    OrderDto createOrder(@RequestBody() PaymentData paymentData) throws StripeException {
+        return orderService.placeOrder(paymentData);
     }
 
     @ResponseStatus(HttpStatus.OK)
