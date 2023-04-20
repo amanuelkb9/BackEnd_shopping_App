@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/products")
+//@CrossOrigin(origins = "http://localhost:3002")
 public class ProductController {
 
 
@@ -34,14 +35,12 @@ public class ProductController {
     @PostMapping("/{seller_id}")
     public void addProduct(@RequestBody ProductDto productDto, @PathVariable long seller_id) {
         User seller = modelMapper.map(searchService.getUserById(seller_id), User.class);
-
+        System.out.println("sssssssssssssssss----------"+seller_id);
+        System.out.println("ppppppppppppppp=========="+productDto.toString());
         if (seller.isAproved()) {
             Product product = modelMapper.map(productDto, Product.class);
-            Product newProduct = new Product();
-            newProduct.setProductName(product.getProductName());
-            newProduct.setDescription(product.getDescription());
-            newProduct.setPrice(product.getPrice());
-            productService.saveProduct(newProduct, seller_id);
+            product.setSeller(seller);
+            productService.saveProduct(product, seller_id);
         }
 
     }

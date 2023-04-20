@@ -26,6 +26,7 @@ private double price;
     private String description;
     private boolean isPurchased;
 
+    private String imageUrl;
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User seller;
