@@ -147,12 +147,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void  registerUser(UserDto userDto) {
+    public UserDto  registerUser(UserDto userDto) {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
             User user = modelMapper.map(userDto, User.class);
 
             userRepo.save(user);
+            return userDto;
         }
 
 
