@@ -43,7 +43,6 @@ public class ProductController {
             productService.saveProduct(product, seller_id);
         }
 
-
     }
 
 

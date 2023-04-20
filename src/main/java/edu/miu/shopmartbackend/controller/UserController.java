@@ -34,17 +34,18 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-//    !!!!!!!!!!!!!!!!!!!
+
     @PatchMapping("/{seller_id}/approveseller")
     UserDto approveSeller( @PathVariable long seller_id){
         return userService.approveSeller(seller_id);
     }
+
+
     @PatchMapping("/{buyer_id}/approvebuyer")
     UserDto approveBuyer( @PathVariable long buyer_id){
         return userService.approveBuyer(buyer_id);
     }
 
-// !!!!!!!!!!!!!!!!!
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/token/refresh")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -64,7 +65,7 @@ public class UserController {
         userService.addRoleToUser(roleToUserDto.getUsername(), roleToUserDto.getRole());
     }
     @PostMapping("/addUser")
-    public ResponseEntity<?> registerUser(UserDto userDto){
+    public ResponseEntity<?> registerUser(@RequestBody UserDto userDto){
         System.out.println(userDto);
 
         userService.registerUser(userDto);
