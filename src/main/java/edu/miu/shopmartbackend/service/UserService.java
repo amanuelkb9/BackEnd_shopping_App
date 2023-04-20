@@ -26,4 +26,6 @@ public interface UserService {
 
 
     UserDto approveBuyer(long buyer_id);
+
+    void registerUser(UserDto userDto);
 }

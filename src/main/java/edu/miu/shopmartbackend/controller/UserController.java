@@ -39,10 +39,7 @@ public class UserController {
     UserDto approveSeller( @PathVariable long seller_id){
         return userService.approveSeller(seller_id);
     }
-    @PatchMapping("/{buyer_id}/approvebuyer")
-    UserDto approveBuyer( @PathVariable long buyer_id){
-        return userService.approveBuyer(buyer_id);
-    }
+
 
     @PatchMapping("/{buyer_id}/approvebuyer")
     UserDto approveBuyer( @PathVariable long buyer_id){
@@ -69,7 +66,7 @@ public class UserController {
         userService.addRoleToUser(roleToUserDto.getUsername(), roleToUserDto.getRole());
     }
     @PostMapping("/addUser")
-    public ResponseEntity<?> registerUser(UserDto userDto){
+    public ResponseEntity<?> registerUser(@RequestBody UserDto userDto){
         System.out.println(userDto);
 
         userService.registerUser(userDto);

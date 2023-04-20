@@ -40,9 +40,6 @@ public class OrderController {
 //        return orderService.deliverOrder(orderId);
 //    }
 
-
-
-
     @ResponseStatus(HttpStatus.OK)
     @EmailSender
     @PatchMapping("/{orderId}/edit")
