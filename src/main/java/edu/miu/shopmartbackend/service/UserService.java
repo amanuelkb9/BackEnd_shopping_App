@@ -24,8 +24,10 @@ public interface UserService {
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
 
+    UserDto registerUser(UserDto userDto);
 
     UserDto approveBuyer(long buyer_id);
 
     void registerUser(UserDto userDto);
 }
+
