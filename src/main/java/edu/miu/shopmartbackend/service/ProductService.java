@@ -10,6 +10,6 @@ public interface ProductService {
 
     void deleteProduct(long id);
 
-    void updateProduct(Product product, long id);
+    void updateProduct(ProductDto productDto, long id);
 }
 
