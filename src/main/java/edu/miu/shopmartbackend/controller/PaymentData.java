@@ -9,7 +9,6 @@ import org.hibernate.validator.constraints.CreditCardNumber;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentData {
-
     private long buyer_id;
     private Double amount;
     private String currency;

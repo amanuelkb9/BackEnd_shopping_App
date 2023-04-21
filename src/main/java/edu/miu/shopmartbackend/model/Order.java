@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 @Entity
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,14 +21,20 @@ public class Order {
 
     @DateTimeFormat(style = "yyyy-mm-dd")
 //    @NotNull
+    @Column(name="order_date")
     private LocalDate orderDate;
+    @Enumerated(EnumType.STRING)
+    @Column(name="order_status")
     private OrderStatus orderStatus;
+    @Column(name = "total_order_price")
     private double totalOrderPrice;
 //
     @ManyToOne
+    @JoinColumn(name ="buyer_id")
     private User buyer;
 
 
     @OneToOne
+    @JoinColumn(name ="shopping_cart_id")
    private ShoppingCart shoppingCart;
 }

@@ -10,6 +10,7 @@ import com.stripe.param.PaymentIntentCreateParams;
 import edu.miu.shopmartbackend.controller.PaymentData;
 import edu.miu.shopmartbackend.model.Payment;
 import edu.miu.shopmartbackend.model.dto.CustomerData;
+import edu.miu.shopmartbackend.model.dto.PaymentResponseDto;
 import edu.miu.shopmartbackend.repo.PaymentRepository;
 import edu.miu.shopmartbackend.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,34 @@ public class PaymentServiceImpl implements PaymentService {
         System.out.println(customer);
         return customer;
     }
+
+//    @Override
+//    public PaymentIntent handlePayment(PaymentData paymentData) throws StripeException {
+//        Stripe.apiKey = secretKey;
+//
+//        // You should receive the payment method ID from the client-side
+//        PaymentResponseDto paymentResponseDto=new PaymentResponseDto();
+//        String paymentMethodId = paymentResponseDto.getPaymentId();
+//
+//
+//        // Create a PaymentIntent with the PaymentMethod ID and the amount to charge
+//        PaymentIntentCreateParams params = new PaymentIntentCreateParams.Builder()
+//                .setPaymentMethod(paymentMethodId)
+//                .setAmount((long) (paymentData.getAmount() * 100))
+//                .setCurrency(paymentData.getCurrency())
+//                .setConfirm(true) // Automatically confirm the PaymentIntent
+//                .build();
+//
+//        // Create and confirm the PaymentIntent
+//        PaymentIntent paymentIntent = PaymentIntent.create(params);
+//        System.out.println(paymentIntent);
+//
+//        // Check the PaymentIntent status
+//        System.out.println("PaymentIntent status: " + paymentIntent.getStatus());
+//
+//        return paymentIntent;
+//    }
+//}
 
     @Override
     public PaymentIntent handlePayment(PaymentData paymentData) throws StripeException {

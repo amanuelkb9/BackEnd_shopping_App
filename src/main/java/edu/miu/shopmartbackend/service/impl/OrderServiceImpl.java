@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -39,48 +40,98 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     PaymentService paymentService;
-
-
     @Override
     public OrderDto placeOrder(PaymentData paymentData) throws StripeException {
-        Order order = new Order();
-        User buyer = userRepo.findById(paymentData.getBuyer_id()).get();
+        // Find buyer by ID and check if it exists
+        Optional<User> buyerOpt = userRepo.findById(paymentData.getBuyer_id());
+        if (!buyerOpt.isPresent()) {
+            throw new IllegalStateException("Buyer not found");
+        }
+        User buyer = buyerOpt.get();
         ShoppingCart shoppingCart = buyer.getShoppingCart();
 
+        // Calculate total price
+        double totalPrice = shoppingCart.getProducts().stream().mapToDouble(Product::getPrice).sum();
+        System.out.println("Total proceeeeeeeeeeeeeeeeeeeeeeeeeee");
+        System.out.println(totalPrice);
+
+        // Create order object
+        Order order = new Order();
         order.setOrderStatus(OrderStatus.ORDERED);
         order.setOrderDate(LocalDate.now());
         order.setShoppingCart(shoppingCart);
         order.setBuyer(buyer);
-
-        double totalPrice = 0;
-        List<Product> products = shoppingCart.getProducts();
-
-        for (Product p : products) {
-            totalPrice += p.getPrice();
-        }
-        System.out.println("===================order set====================");
-        System.out.println(order);
         order.setTotalOrderPrice(totalPrice);
+
+        // Save the order
         orderRepo.save(order);
-        System.out.println("===============order saved1 ================");
+        System.out.println("================order1================");
+        System.out.println(order);
+        System.out.println("================order1================");
 
+        // Handle payment
         PaymentIntent paymentIntent = paymentService.handlePayment(paymentData);
-        //invoiceService.payToOrder(totalPrice);
-        if("succeeded".equals(paymentIntent.getStatus())){
+        System.out.println("================payment Intent================");
+        System.out.println(paymentIntent.getStatus());
+        System.out.println("================payment Intent================");
 
+        // Check payment status
+        if ("succeeded".equals(paymentIntent.getStatus())) {
             order.setOrderStatus(OrderStatus.PAID);
-            OrderDto orderDto = modelMapper.map(orderRepo.save(order), OrderDto.class);
-            System.out.println("==================Order saved2================");
-            System.out.println(order);
-            return orderDto;
-        }else {
-            System.out.println("!!!!!!!!!!!!exception!!!!!!!!!!!!!!!");
+            Order savedOrder = orderRepo.save(order);
+            System.out.println("================saved order================");
+            System.out.println(savedOrder);
+            System.out.println("================saved order================");
+            return modelMapper.map(savedOrder, OrderDto.class);
+        } else {
             throw new IllegalStateException("Payment failed");
         }
-
-
-
     }
+
+
+//    @Override
+//    public OrderDto placeOrder(PaymentData paymentData) throws StripeException {
+//        Order order = new Order();
+//        User buyer = userRepo.findById(paymentData.getBuyer_id()).get();
+//        ShoppingCart shoppingCart = buyer.getShoppingCart();
+//
+//        order.setOrderStatus(OrderStatus.ORDERED);
+//        order.setOrderDate(LocalDate.now());
+//        order.setShoppingCart(shoppingCart);
+//        order.setBuyer(buyer);
+//        System.out.println("==========11111111======================");
+//        System.out.println(order);
+//
+//        double totalPrice = 0;
+//        List<Product> products = shoppingCart.getProducts();
+//
+//        for (Product p : products) {
+//            totalPrice += p.getPrice();
+//        }
+//        System.out.println("===================order set====================");
+//        System.out.println(totalPrice+" priceeeeeeeeeeeeeee");
+//        System.out.println(order);
+//        order.setTotalOrderPrice(totalPrice);
+//        orderRepo.save(order);
+//        System.out.println("===============order saved1 ================");
+//
+//        PaymentIntent paymentIntent = paymentService.handlePayment(paymentData);
+//        //invoiceService.payToOrder(totalPrice);
+//        if("succeeded".equals(paymentIntent.getStatus())){
+//
+//            order.setOrderStatus(OrderStatus.PAID);
+//            OrderDto orderDto = modelMapper.map(orderRepo.save(order), OrderDto.class);
+//            System.out.println("==================Order saved2================");
+//            System.out.println(order);
+//            return orderDto;
+//        }else {
+//            System.out.println("!!!!!!!!!!!!exception!!!!!!!!!!!!!!!");
+//            throw new IllegalStateException("Payment failed");
+//        }
+//
+//
+//
+//    }
 
 //    @Override
 //    public OrderDto placeOrder(long buyer_id) throws StripeException {
