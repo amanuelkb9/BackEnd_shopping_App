@@ -49,11 +49,8 @@ public class OrderServiceImpl implements OrderService {
         }
         User buyer = buyerOpt.get();
         ShoppingCart shoppingCart = buyer.getShoppingCart();
-
         // Calculate total price
         double totalPrice = shoppingCart.getProducts().stream().mapToDouble(Product::getPrice).sum();
-        System.out.println("Total proceeeeeeeeeeeeeeeeeeeeeeeeeee");
-        System.out.println(totalPrice);
 
         // Create order object
         Order order = new Order();
@@ -62,26 +59,18 @@ public class OrderServiceImpl implements OrderService {
         order.setShoppingCart(shoppingCart);
         order.setBuyer(buyer);
         order.setTotalOrderPrice(totalPrice);
-
         // Save the order
         orderRepo.save(order);
-        System.out.println("================order1================");
-        System.out.println(order);
-        System.out.println("================order1================");
-//
+        paymentData.setAmount(totalPrice);
         // Handle payment
-        String paymentIntent = paymentService.handlePayment(paymentData);
-        System.out.println("================payment Intent================");
-        System.out.println(paymentIntent);
-        System.out.println("================payment Intent================");
-
+        PaymentIntent paymentIntent = paymentService.handlePayment(paymentData);
         // Check payment status
-        if ("succeeded".equals(paymentIntent)) {
+        System.out.println("1111111111111111111111111111111");
+        System.out.println(paymentIntent.getStatus());
+        System.out.println("1111111111111111111111111111111");
+        if ("succeeded".equals(paymentIntent.getStatus())) {
             order.setOrderStatus(OrderStatus.PAID);
             Order savedOrder = orderRepo.save(order);
-            System.out.println("================saved order================");
-            System.out.println(savedOrder);
-            System.out.println("================saved order================");
             return modelMapper.map(savedOrder, OrderDto.class);
         } else {
             throw new IllegalStateException("Payment failed");
