@@ -111,42 +111,47 @@ public class PaymentServiceImpl implements PaymentService {
 //    }
 //}
 
-    @Override
-    public String handlePayment(PaymentData paymentData) throws StripeException {
+    public PaymentIntent handlePayment(PaymentData paymentData) throws StripeException {
         Stripe.apiKey = secretKey;
 
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", (long) (paymentData.getAmount() * 100));
+        params.put("currency", paymentData.getCurrency());
+        params.put("description", "Order Payment");
+
+        // Set up payment method
         Map<String, Object> paymentMethodParams = new HashMap<>();
-        paymentMethodParams.put("type", paymentData.getType());
-        paymentMethodParams.put("card[number]", paymentData.getCardNumber());
-        paymentMethodParams.put("card[exp_month]", paymentData.getExp_month());
-        paymentMethodParams.put("card[exp_year]", paymentData.getExp_year());
-        paymentMethodParams.put("card[cvc]", paymentData.getCvc());
+        switch (paymentData.getType()) {
+            case "card":
+                paymentMethodParams.put("type", "card");
+                paymentMethodParams.put("card[number]", paymentData.getCardNumber());
+                paymentMethodParams.put("card[exp_month]", paymentData.getExp_month());
+                paymentMethodParams.put("card[exp_year]", paymentData.getExp_year());
+                paymentMethodParams.put("card[cvc]", paymentData.getCvc());
+                params.put("payment_method", PaymentMethod.create(paymentMethodParams).getId());
+                break;
+//            case "sepa_debit":
+//                paymentMethodParams.put("type", "sepa_debit");
+//                paymentMethodParams.put("sepa_debit[iban]", paymentData.getIban());
+//                params.put("payment_method_types[]", "sepa_debit");
+//                params.put("payment_method_data[sepa_debit]", paymentMethodParams);
+//                break;
+            default:
+                throw new IllegalArgumentException("Invalid payment method type");
+        }
 
-        PaymentMethod paymentMethod = PaymentMethod.create(paymentMethodParams);
-
-        // Create a PaymentIntent with the PaymentMethod ID and the amount to charge
-        PaymentIntentCreateParams params = new PaymentIntentCreateParams.Builder()
-                .setPaymentMethod(paymentMethod.getId())
-                .setAmount((long) (paymentData.getAmount() * 100))
-                .setCurrency(paymentData.getCurrency())
-                .build();
+        // Create payment intent
         PaymentIntent paymentIntent = PaymentIntent.create(params);
-        System.out.println(paymentIntent);
+        System.out.println("PaymentIntent created: " + paymentIntent);
 
-        // Confirm the PaymentIntent to charge the customer
+        // Confirm payment intent
         PaymentIntentConfirmParams confirmParams = new PaymentIntentConfirmParams.Builder()
-                .setPaymentMethod(paymentMethod.getId())
+                .setPaymentMethod(paymentIntent.getPaymentMethod())
                 .build();
         paymentIntent.confirm(confirmParams);
-
-        // Update the PaymentIntent status to succeeded
         paymentIntent.setStatus("succeeded");
-        // PaymentIntent updatedPaymentIntent = paymentIntent.update();
-        System.out.println("PaymentIntent status: " + paymentIntent.getStatus());
+        System.out.println("PaymentIntent confirmed: " + paymentIntent);
 
-        // Call the createOrder method
-        // orderService.placeOrder(paymentData.getBuyer_id());
-//        System.out.println(confirmParams.getReceiptEmail());
-        return paymentIntent.getStatus();
+        return paymentIntent;
     }
 }

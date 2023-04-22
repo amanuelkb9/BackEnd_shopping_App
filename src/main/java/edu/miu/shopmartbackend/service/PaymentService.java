@@ -9,5 +9,5 @@ import edu.miu.shopmartbackend.model.dto.CustomerData;
 
 public interface PaymentService {
     Customer createCustomer(CustomerData customerData) throws StripeException;
-    String handlePayment(PaymentData paymentData) throws StripeException;
+    PaymentIntent handlePayment(PaymentData paymentData) throws StripeException;
 }

@@ -241,7 +241,7 @@ public class PaymentController {
 //        // orderService.placeOrder(paymentData.getBuyer_id());
 //        System.out.println(confirmParams.getReceiptEmail());
 //        return paymentIntent;
-        return paymentService.handlePayment(paymentData);
+        return paymentService.handlePayment(paymentData).getStatus();
     }
 
 
