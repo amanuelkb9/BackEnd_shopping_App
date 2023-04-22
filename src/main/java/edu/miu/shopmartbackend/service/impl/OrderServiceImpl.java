@@ -2,9 +2,13 @@ package edu.miu.shopmartbackend.service.impl;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-import edu.miu.shopmartbackend.model.PaymentData;
+import edu.miu.shopmartbackend.controller.PaymentController;
+import edu.miu.shopmartbackend.controller.PaymentData;
 import edu.miu.shopmartbackend.enums.OrderStatus;
-import edu.miu.shopmartbackend.model.*;
+import edu.miu.shopmartbackend.model.Order;
+import edu.miu.shopmartbackend.model.Product;
+import edu.miu.shopmartbackend.model.ShoppingCart;
+import edu.miu.shopmartbackend.model.User;
 import edu.miu.shopmartbackend.model.dto.OrderDto;
 import edu.miu.shopmartbackend.repo.OrderRepo;
 import edu.miu.shopmartbackend.repo.UserRepo;
@@ -45,11 +49,8 @@ public class OrderServiceImpl implements OrderService {
         }
         User buyer = buyerOpt.get();
         ShoppingCart shoppingCart = buyer.getShoppingCart();
-
         // Calculate total price
         double totalPrice = shoppingCart.getProducts().stream().mapToDouble(Product::getPrice).sum();
-        System.out.println("Total proceeeeeeeeeeeeeeeeeeeeeeeeeee");
-        System.out.println(totalPrice);
 
         // Create order object
         Order order = new Order();
@@ -58,30 +59,18 @@ public class OrderServiceImpl implements OrderService {
         order.setShoppingCart(shoppingCart);
         order.setBuyer(buyer);
         order.setTotalOrderPrice(totalPrice);
-
         // Save the order
         orderRepo.save(order);
-        System.out.println("================order1================");
-        System.out.println(order);
-        System.out.println("================order1================");
-
-
-        //create payment
-        Payment payment = paymentService.createPayment(totalPrice, paymentData.getCurrency(), paymentData.getToken());
-        paymentData.setPaymentMethodId(payment.getId());
+        paymentData.setAmount(totalPrice);
         // Handle payment
         PaymentIntent paymentIntent = paymentService.handlePayment(paymentData);
-        System.out.println("================payment Intent================");
-        System.out.println(paymentIntent.getStatus());
-        System.out.println("================payment Intent================");
-
         // Check payment status
+        System.out.println("1111111111111111111111111111111");
+        System.out.println(paymentIntent.getStatus());
+        System.out.println("1111111111111111111111111111111");
         if ("succeeded".equals(paymentIntent.getStatus())) {
             order.setOrderStatus(OrderStatus.PAID);
             Order savedOrder = orderRepo.save(order);
-            System.out.println("================saved order================");
-            System.out.println(savedOrder);
-            System.out.println("================saved order================");
             return modelMapper.map(savedOrder, OrderDto.class);
         } else {
             throw new IllegalStateException("Payment failed");
