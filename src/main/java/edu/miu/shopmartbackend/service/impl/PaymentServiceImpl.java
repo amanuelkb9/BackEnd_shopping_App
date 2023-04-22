@@ -151,6 +151,7 @@ public class PaymentServiceImpl implements PaymentService {
         paymentIntent.confirm(confirmParams);
         paymentIntent.setStatus("succeeded");
         System.out.println("PaymentIntent confirmed: " + paymentIntent);
+        System.out.println(paymentIntent);
 
         return paymentIntent;
     }
