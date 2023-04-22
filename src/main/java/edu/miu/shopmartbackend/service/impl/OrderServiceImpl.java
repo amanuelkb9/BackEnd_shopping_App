@@ -2,13 +2,9 @@ package edu.miu.shopmartbackend.service.impl;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-import edu.miu.shopmartbackend.controller.PaymentController;
-import edu.miu.shopmartbackend.controller.PaymentData;
+import edu.miu.shopmartbackend.model.PaymentData;
 import edu.miu.shopmartbackend.enums.OrderStatus;
-import edu.miu.shopmartbackend.model.Order;
-import edu.miu.shopmartbackend.model.Product;
-import edu.miu.shopmartbackend.model.ShoppingCart;
-import edu.miu.shopmartbackend.model.User;
+import edu.miu.shopmartbackend.model.*;
 import edu.miu.shopmartbackend.model.dto.OrderDto;
 import edu.miu.shopmartbackend.repo.OrderRepo;
 import edu.miu.shopmartbackend.repo.UserRepo;
@@ -69,6 +65,10 @@ public class OrderServiceImpl implements OrderService {
         System.out.println(order);
         System.out.println("================order1================");
 
+
+        //create payment
+        Payment payment = paymentService.createPayment(totalPrice, paymentData.getCurrency(), paymentData.getToken());
+        paymentData.setPaymentMethodId(payment.getId());
         // Handle payment
         PaymentIntent paymentIntent = paymentService.handlePayment(paymentData);
         System.out.println("================payment Intent================");

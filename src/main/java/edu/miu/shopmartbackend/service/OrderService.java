@@ -1,7 +1,7 @@
 package edu.miu.shopmartbackend.service;
 
 import com.stripe.exception.StripeException;
-import edu.miu.shopmartbackend.controller.PaymentData;
+import edu.miu.shopmartbackend.model.PaymentData;
 import edu.miu.shopmartbackend.model.dto.OrderDto;
 
 public interface OrderService {

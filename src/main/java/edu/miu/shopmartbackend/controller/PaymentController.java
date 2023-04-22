@@ -3,28 +3,20 @@ package edu.miu.shopmartbackend.controller;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
-import com.stripe.net.RequestOptions;
-import com.stripe.param.CustomerCreateParams;
-import com.stripe.param.PaymentIntentConfirmParams;
 import com.stripe.param.PaymentIntentCreateParams;
-import com.stripe.param.PaymentIntentUpdateParams;
-import edu.miu.shopmartbackend.model.Payment;
+import edu.miu.shopmartbackend.model.PaymentData;
 import edu.miu.shopmartbackend.model.dto.CustomerData;
-import edu.miu.shopmartbackend.model.dto.PaymentRequestDto;
-import edu.miu.shopmartbackend.model.dto.PaymentResponseDto;
 import edu.miu.shopmartbackend.service.OrderService;
 import edu.miu.shopmartbackend.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/payments")
@@ -204,7 +196,7 @@ public class PaymentController {
 
 
     @PostMapping("")
-    public PaymentIntent handlePayment(@RequestBody PaymentData paymentData) throws StripeException {
+    public String handlePayment(@RequestBody PaymentData paymentData) throws StripeException {
 //        // Set your Stripe API key
 //        Stripe.apiKey = secretKey;
 //
@@ -241,7 +233,12 @@ public class PaymentController {
 //        // orderService.placeOrder(paymentData.getBuyer_id());
 //        System.out.println(confirmParams.getReceiptEmail());
 //        return paymentIntent;
-        return paymentService.handlePayment(paymentData);
+        return paymentService.handlePayment(paymentData).getStatus();
+    }
+
+    @PostMapping("/create-payment-intent")
+    public PaymentIntent createPaymentIntent(@RequestBody PaymentData paymentData) throws StripeException {
+        return paymentService.createPaymentIntent(paymentData);
     }
 
 

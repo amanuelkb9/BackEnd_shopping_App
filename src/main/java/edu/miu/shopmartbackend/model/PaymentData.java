@@ -1,4 +1,4 @@
-package edu.miu.shopmartbackend.controller;
+package edu.miu.shopmartbackend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,10 +13,12 @@ public class PaymentData {
     private Double amount;
     private String currency;
     private String type;
+    private String paymentMethodId;
     @CreditCardNumber
     private String cardNumber;
     private Integer exp_month;
     private Integer exp_year;
     private String cvc;
+    private String token;
 
 }
