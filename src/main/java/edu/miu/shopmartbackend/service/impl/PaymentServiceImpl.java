@@ -112,7 +112,7 @@ public class PaymentServiceImpl implements PaymentService {
 //}
 
     @Override
-    public PaymentIntent handlePayment(PaymentData paymentData) throws StripeException {
+    public String handlePayment(PaymentData paymentData) throws StripeException {
         Stripe.apiKey = secretKey;
 
         Map<String, Object> paymentMethodParams = new HashMap<>();
@@ -147,6 +147,6 @@ public class PaymentServiceImpl implements PaymentService {
         // Call the createOrder method
         // orderService.placeOrder(paymentData.getBuyer_id());
 //        System.out.println(confirmParams.getReceiptEmail());
-        return paymentIntent;
+        return paymentIntent.getStatus();
     }
 }

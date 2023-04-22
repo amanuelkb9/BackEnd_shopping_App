@@ -204,7 +204,7 @@ public class PaymentController {
 
 
     @PostMapping("")
-    public PaymentIntent handlePayment(@RequestBody PaymentData paymentData) throws StripeException {
+    public String handlePayment(@RequestBody PaymentData paymentData) throws StripeException {
 //        // Set your Stripe API key
 //        Stripe.apiKey = secretKey;
 //

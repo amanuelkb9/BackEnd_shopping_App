@@ -68,15 +68,15 @@ public class OrderServiceImpl implements OrderService {
         System.out.println("================order1================");
         System.out.println(order);
         System.out.println("================order1================");
-
+//
         // Handle payment
-        PaymentIntent paymentIntent = paymentService.handlePayment(paymentData);
+        String paymentIntent = paymentService.handlePayment(paymentData);
         System.out.println("================payment Intent================");
-        System.out.println(paymentIntent.getStatus());
+        System.out.println(paymentIntent);
         System.out.println("================payment Intent================");
 
         // Check payment status
-        if ("succeeded".equals(paymentIntent.getStatus())) {
+        if ("succeeded".equals(paymentIntent)) {
             order.setOrderStatus(OrderStatus.PAID);
             Order savedOrder = orderRepo.save(order);
             System.out.println("================saved order================");
