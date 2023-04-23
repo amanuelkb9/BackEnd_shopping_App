@@ -2,6 +2,7 @@ package edu.miu.shopmartbackend.controller;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
+import edu.miu.shopmartbackend.model.CardPayment;
 import edu.miu.shopmartbackend.model.dto.PaymentDto;
 import edu.miu.shopmartbackend.service.OrderService;
 import edu.miu.shopmartbackend.service.PaymentService;
@@ -27,6 +28,11 @@ public class PaymentController {
     @PostMapping("")
     public String handlePayment(@RequestBody PaymentDto paymentDto) throws StripeException {
         return paymentService.handlePayment(paymentDto).getStatus();
+    }
+
+    @PostMapping("sellerPayment")
+    public String sellerPayment(@RequestBody CardPayment cardPayment) throws StripeException {
+        return paymentService.sellerPayment(cardPayment).getStatus();
     }
 
 

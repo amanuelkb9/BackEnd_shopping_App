@@ -71,6 +71,7 @@ public class OrderServiceImpl implements OrderService {
         if ("succeeded".equals(paymentIntent.getStatus())) {
             order.setOrderStatus(OrderStatus.PAID);
             Order savedOrder = orderRepo.save(order);
+            Invoice invoice = invoiceService.payToOrder(paymentDto);
             return modelMapper.map(savedOrder, OrderDto.class);
         } else {
             throw new IllegalStateException("Payment failed");
@@ -78,90 +79,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-//    @Override
-//    public OrderDto placeOrder(PaymentDto paymentData) throws StripeException {
-//        Order order = new Order();
-//        User buyer = userRepo.findById(paymentData.getBuyer_id()).get();
-//        ShoppingCart shoppingCart = buyer.getShoppingCart();
-//
-//        order.setOrderStatus(OrderStatus.ORDERED);
-//        order.setOrderDate(LocalDate.now());
-//        order.setShoppingCart(shoppingCart);
-//        order.setBuyer(buyer);
-//        System.out.println("==========11111111======================");
-//        System.out.println(order);
-//
-//        double totalPrice = 0;
-//        List<Product> products = shoppingCart.getProducts();
-//
-//        for (Product p : products) {
-//            totalPrice += p.getPrice();
-//        }
-//        System.out.println("===================order set====================");
-//        System.out.println(totalPrice+" priceeeeeeeeeeeeeee");
-//        System.out.println(order);
-//        order.setTotalOrderPrice(totalPrice);
-//        orderRepo.save(order);
-//        System.out.println("===============order saved1 ================");
-//
-//        PaymentIntent paymentIntent = paymentService.handlePayment(paymentData);
-//        //invoiceService.payToOrder(totalPrice);
-//        if("succeeded".equals(paymentIntent.getStatus())){
-//
-//            order.setOrderStatus(OrderStatus.PAID);
-//            OrderDto orderDto = modelMapper.map(orderRepo.save(order), OrderDto.class);
-//            System.out.println("==================Order saved2================");
-//            System.out.println(order);
-//            return orderDto;
-//        }else {
-//            System.out.println("!!!!!!!!!!!!exception!!!!!!!!!!!!!!!");
-//            throw new IllegalStateException("Payment failed");
-//        }
-//
-//
-//
-//    }
-
-//    @Override
-//    public OrderDto placeOrder(long buyer_id) throws StripeException {
-//        Order order = new Order();
-//        User buyer = userRepo.findById(buyer_id).get();
-//        ShoppingCart shoppingCart = buyer.getShoppingCart();
-//
-//        order.setOrderStatus(OrderStatus.ORDERED);
-//        order.setOrderDate(LocalDate.now());
-//        order.setShoppingCart(shoppingCart);
-//        order.setBuyer(buyer);
-//
-//        double totalPrice = 0;
-//        List<Product> products = shoppingCart.getProducts();
-//
-//        for (Product p : products) {
-//            totalPrice += p.getPrice();
-//        }
-//
-//        // Handle payment
-//        PaymentDto paymentData = new PaymentDto();
-//        paymentData.setType("card");
-//        paymentData.setCardNumber("4242424242424242"); // replace with actual card number
-//        paymentData.setExp_month(12);
-//        paymentData.setExp_year(2023);
-//        paymentData.setCvc("123"); // replace with actual CVC code
-//        paymentData.setAmount(totalPrice);
-//        paymentData.setCurrency("usd");
-//        paymentData.setBuyer_id(buyer_id);
-//        PaymentIntent paymentIntent = paymentController.handlePayment(paymentData);
-//
-//        if (paymentIntent.getStatus().equals("succeeded")) {
-//            order.setTotalOrderPrice(totalPrice);
-//            invoiceService.payToOrder(totalPrice);
-//            orderRepo.save(order);
-//        } else {
-//            throw new RuntimeException("Payment failed");
-//        }
-//
-//        return modelMapper.map(order, OrderDto.class);
-//    }
 
 
     @Override
@@ -190,19 +107,7 @@ public class OrderServiceImpl implements OrderService {
         return orderDto;
     }
 
-    //    @Override
-//    public OrderDto deliverOrder(long orderId) {
-//        Order order = modelMapper.map(orderRepo.findById(orderId).get(), Order.class);
-//        if (order.getOrderStatus() == OrderStatus.SHIPPED) {
-//            order.setOrderStatus(OrderStatus.DELIVERED);
-//        }
-//        User buyer = order.getBuyer();
-//        int points = buyer.getPoints() + 10;
-//        buyer.setPoints(points);
-//        order.setBuyer(buyer);
-//        return modelMapper.map(orderRepo.save(order),OrderDto .class);
-//
-//    }
+
     @Override
     public OrderDto cancelOrder(long orderId) {
         Order orders = modelMapper.map(orderRepo.findById(orderId).get(), Order.class);

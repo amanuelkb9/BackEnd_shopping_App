@@ -23,6 +23,8 @@ public class Invoice {
     @Size(min = 8)
     private String cardNumber;
 
+    private double totalPrice;
+
     @ManyToOne
     private User user;
 

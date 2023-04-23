@@ -5,6 +5,7 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.PaymentIntentConfirmParams;
+import edu.miu.shopmartbackend.model.CardPayment;
 import edu.miu.shopmartbackend.model.Payment;
 import edu.miu.shopmartbackend.model.dto.PaymentDto;
 import edu.miu.shopmartbackend.model.dto.UserDto;
@@ -105,6 +106,47 @@ public class PaymentServiceImpl implements PaymentService {
             System.out.println(e.getMessage());
         }
         return paymentIntent;
+    }
+
+    @Override
+    public PaymentIntent sellerPayment(CardPayment cardPayment) throws StripeException {
+        Stripe.apiKey = secretKey;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", (long) (20000.00 * 100));
+        params.put("currency", "USD");
+        params.put("CustomerName", "New Seller");
+        params.put("description", "Seller Approval Payment");
+        Customer customer = Customer.create(params);
+        // Set up payment method
+        // card number 4242424242424242 succeeds while
+        Map<String, Object> paymentMethodParams = new HashMap<>();
+
+                paymentMethodParams.put("type", "card");
+                paymentMethodParams.put("card[number]", cardPayment.getCardNumber());
+                paymentMethodParams.put("card[exp_month]", cardPayment.getExpMonth());
+                paymentMethodParams.put("card[exp_year]", cardPayment.getExpYear());
+                paymentMethodParams.put("card[cvc]", cardPayment.getCvc());
+                params.put("payment_method", PaymentMethod.create(paymentMethodParams).getId());
+
+
+        // Create payment intent
+        PaymentIntent paymentIntent = PaymentIntent.create(params);
+        System.out.println("PaymentIntent created: " + paymentIntent);
+
+        // Confirm payment intent
+        PaymentIntentConfirmParams confirmParams = new PaymentIntentConfirmParams.Builder()
+                .setPaymentMethod(paymentIntent.getPaymentMethod())
+                .build();
+        try {
+            paymentIntent.confirm(confirmParams);
+            paymentIntent.setStatus("succeeded");
+            System.out.println("PaymentIntent confirmed: " + paymentIntent);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return paymentIntent;
+
     }
 
 
