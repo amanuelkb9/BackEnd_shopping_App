@@ -1,5 +1,7 @@
 package edu.miu.shopmartbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import edu.miu.shopmartbackend.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,13 +30,14 @@ public class Order {
     private OrderStatus orderStatus;
     @Column(name = "total_order_price")
     private double totalOrderPrice;
-//
+
+//    @JsonManagedReference
     @ManyToOne
-    @JoinColumn(name ="buyer_id")
+   @JoinColumn(name ="buyer_id")
     private User buyer;
 
-
+//    @JsonBackReference
     @OneToOne
-    @JoinColumn(name ="shopping_cart_id")
+   @JoinColumn(name ="shopping_cart_id")
    private ShoppingCart shoppingCart;
 }

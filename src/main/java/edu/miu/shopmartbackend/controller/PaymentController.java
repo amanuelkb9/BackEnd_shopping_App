@@ -203,45 +203,45 @@ public class PaymentController {
 
 
 
-    @PostMapping("")
-    public PaymentIntent handlePayment(@RequestBody PaymentData paymentData) throws StripeException {
-//        // Set your Stripe API key
-//        Stripe.apiKey = secretKey;
-//
-//        Map<String, Object> paymentMethodParams = new HashMap<>();
-//        paymentMethodParams.put("type", paymentData.getType());
-//        paymentMethodParams.put("card[number]", paymentData.getCardNumber());
-//        paymentMethodParams.put("card[exp_month]", paymentData.getExp_month());
-//        paymentMethodParams.put("card[exp_year]", paymentData.getExp_year());
-//        paymentMethodParams.put("card[cvc]", paymentData.getCvc());
-//
-//        PaymentMethod paymentMethod = PaymentMethod.create(paymentMethodParams);
-//
-//        // Create a PaymentIntent with the PaymentMethod ID and the amount to charge
-//        PaymentIntentCreateParams params = new PaymentIntentCreateParams.Builder()
-//                .setPaymentMethod(paymentMethod.getId())
-//                .setAmount((long) (paymentData.getAmount() * 100))
-//                .setCurrency(paymentData.getCurrency())
-//                .build();
-//        PaymentIntent paymentIntent = PaymentIntent.create(params);
-//        System.out.println(paymentIntent);
-//
-//        // Confirm the PaymentIntent to charge the customer
-//        PaymentIntentConfirmParams confirmParams = new PaymentIntentConfirmParams.Builder()
-//                .setPaymentMethod(paymentMethod.getId())
-//                .build();
-//        paymentIntent.confirm(confirmParams);
-//
-//        // Update the PaymentIntent status to succeeded
-//        paymentIntent.setStatus("succeeded");
-//       // PaymentIntent updatedPaymentIntent = paymentIntent.update();
-//        System.out.println("PaymentIntent status: " + paymentIntent.getStatus());
-//
-//        // Call the createOrder method
-//        // orderService.placeOrder(paymentData.getBuyer_id());
-//        System.out.println(confirmParams.getReceiptEmail());
+    @PostMapping()
+    public void handlePayment(@RequestBody PaymentData paymentData) throws StripeException {
+        // Set your Stripe API key
+        Stripe.apiKey = secretKey;
+
+        Map<String, Object> paymentMethodParams = new HashMap<>();
+        paymentMethodParams.put("type", paymentData.getType());
+        paymentMethodParams.put("card[number]", paymentData.getCardNumber());
+        paymentMethodParams.put("card[exp_month]", paymentData.getExp_month());
+        paymentMethodParams.put("card[exp_year]", paymentData.getExp_year());
+        paymentMethodParams.put("card[cvc]", paymentData.getCvc());
+
+        PaymentMethod paymentMethod = PaymentMethod.create(paymentMethodParams);
+
+        // Create a PaymentIntent with the PaymentMethod ID and the amount to charge
+        PaymentIntentCreateParams params = new PaymentIntentCreateParams.Builder()
+                .setPaymentMethod(paymentMethod.getId())
+                .setAmount((long) (paymentData.getAmount() * 100))
+                .setCurrency(paymentData.getCurrency())
+                .build();
+        PaymentIntent paymentIntent = PaymentIntent.create(params);
+        System.out.println(paymentIntent);
+
+        // Confirm the PaymentIntent to charge the customer
+        PaymentIntentConfirmParams confirmParams = new PaymentIntentConfirmParams.Builder()
+                .setPaymentMethod(paymentMethod.getId())
+                .build();
+        paymentIntent.confirm(confirmParams);
+
+        // Update the PaymentIntent status to succeeded
+        paymentIntent.setStatus("succeeded");
+       // PaymentIntent updatedPaymentIntent = paymentIntent.update();
+        System.out.println("PaymentIntent status: " + paymentIntent.getStatus());
+
+        // Call the createOrder method
+        // orderService.placeOrder(paymentData.getBuyer_id());
+        System.out.println(confirmParams.getReceiptEmail());
 //        return paymentIntent;
-        return paymentService.handlePayment(paymentData);
+
     }
 
 

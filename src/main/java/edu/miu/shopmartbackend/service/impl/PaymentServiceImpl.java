@@ -1,9 +1,11 @@
 package edu.miu.shopmartbackend.service.impl;
 
 import com.stripe.Stripe;
+import com.stripe.exception.AuthenticationException;
+import com.stripe.exception.CardException;
+import com.stripe.exception.InvalidRequestException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
-import com.stripe.net.RequestOptions;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.PaymentIntentConfirmParams;
 import com.stripe.param.PaymentIntentCreateParams;
@@ -60,7 +62,8 @@ public class PaymentServiceImpl implements PaymentService {
 //    }
 
     @Override
-    public Customer createCustomer(CustomerData customerData) throws StripeException {
+    public Customer createCustomer(CustomerData customerData) throws StripeException, AuthenticationException, InvalidRequestException,
+            CardException {
         Stripe.apiKey = secretKey;
 
         // Create a new Customer object with the customer's name and email

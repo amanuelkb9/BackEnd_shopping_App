@@ -44,8 +44,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/v1/roles/**").hasAuthority("ADMIN");
         http.authorizeRequests().antMatchers("/api/v1/users/**").hasAuthority("ADMIN");
         http.authorizeRequests().antMatchers( "/api/v1/carts/**").hasAuthority("BUYER");
-//        http.authorizeRequests().antMatchers( "/api/v1/carts/**").permitAll();
-//        http.authorizeRequests().antMatchers( "/api/v1/payments/**").permitAll();
+        http.authorizeRequests().antMatchers( "/api/v1/carts/**").permitAll();
+        http.authorizeRequests().antMatchers( "/api/v1/payments/**").permitAll();
 //        http.authorizeRequests().antMatchers("/api/v1/users/**").permitAll();
 //        http.authorizeRequests().antMatchers( "/api/v1/products/**").permitAll();
 //        http.authorizeRequests().antMatchers( "/api/v1/search/**").permitAll();

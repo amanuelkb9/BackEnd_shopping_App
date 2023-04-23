@@ -1,5 +1,7 @@
 package edu.miu.shopmartbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -47,6 +49,7 @@ public class User {
     })
     private Address billingAddress;
 
+//    @JsonBackReference
     @OneToOne()
     private ShoppingCart shoppingCart;
 
@@ -57,11 +60,9 @@ public class User {
     @OneToMany
     private List<Order> orders;
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "seller")
     private List<Product> products;
-
-
 
 
 }

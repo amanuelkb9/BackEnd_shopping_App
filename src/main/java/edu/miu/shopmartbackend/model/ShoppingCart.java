@@ -1,5 +1,6 @@
 package edu.miu.shopmartbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,11 @@ public class ShoppingCart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Product> products;
+
+    @OneToOne(mappedBy = "shoppingCart")
+    private User user;
 
 }
