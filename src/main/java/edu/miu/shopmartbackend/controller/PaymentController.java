@@ -2,12 +2,12 @@ package edu.miu.shopmartbackend.controller;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
+import edu.miu.shopmartbackend.model.CardPayment;
 import edu.miu.shopmartbackend.model.dto.PaymentDto;
 import edu.miu.shopmartbackend.service.OrderService;
 import edu.miu.shopmartbackend.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -30,6 +30,11 @@ public class PaymentController {
         return paymentService.handlePayment(paymentDto).getStatus();
     }
 
+    @PostMapping("sellerPayment")
+    public String sellerPayment(@RequestBody CardPayment cardPayment) throws StripeException {
+        return paymentService.sellerPayment(cardPayment).getStatus();
+    }
+
 
     @PostMapping("/createCustomer")
     public Customer createCustomer(@RequestBody PaymentDto paymentDto) throws StripeException {
@@ -38,11 +43,6 @@ public class PaymentController {
     }
 
 
-    @GetMapping("/getCustomer/{customerId}")
-    public Customer getCustomer(@PathVariable String customerId) throws StripeException{
-
-        return paymentService.getCustomer(customerId);
-    }
 
 
 }

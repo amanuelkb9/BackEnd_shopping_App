@@ -36,8 +36,8 @@ public class OrderController {
 
     @ResponseStatus(HttpStatus.OK)
     @EmailSender
-    @PatchMapping("/{orderId}/edit")
-    public OrderDto editOrder(Long orderId, double discount) {
+    @PatchMapping("/edit/{orderId}/{discount}")
+    public OrderDto editOrder(@PathVariable Long orderId, @PathVariable double discount) {
         return orderService.editOrder(orderId, discount);
     }
 

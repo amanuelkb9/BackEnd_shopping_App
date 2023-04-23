@@ -5,9 +5,12 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.*;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.PaymentIntentConfirmParams;
+import edu.miu.shopmartbackend.model.CardPayment;
 import edu.miu.shopmartbackend.model.Payment;
 import edu.miu.shopmartbackend.model.dto.PaymentDto;
+import edu.miu.shopmartbackend.model.dto.UserDto;
 import edu.miu.shopmartbackend.repo.PaymentRepository;
+import edu.miu.shopmartbackend.repo.UserRepo;
 import edu.miu.shopmartbackend.service.PaymentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +34,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Value("${stripe.apiKey}")
     private String secretKey;
-
+    @Autowired
+    private UserRepo userRepo;
 
 
     @Override
@@ -58,12 +62,19 @@ public class PaymentServiceImpl implements PaymentService {
         Map<String, Object> params = new HashMap<>();
         params.put("amount", (long) (paymentDto.getAmount() * 100));
         params.put("currency", paymentDto.getCurrency());
-        params.put("CustomerName", paymentDto.getName());
-        params.put("customerId", paymentDto.getBuyer_id());
-        params.put("order", paymentDto.getOrder_Id());
+
         params.put("description", "Order Payment");
 
+
+        Map<String, Object> params2 = new HashMap<>();
+
+
+
+        Customer customer = createCustomer(paymentDto);
+
+
         // Set up payment method
+        // card number 4242424242424242 succeeds while
         Map<String, Object> paymentMethodParams = new HashMap<>();
         switch (paymentDto.getType()) {
             case "card":
@@ -86,6 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         // Create payment intent
         PaymentIntent paymentIntent = PaymentIntent.create(params);
+        paymentIntent.setCustomer(customer.getId());
         System.out.println("PaymentIntent created: " + paymentIntent);
 
         // Confirm payment intent
@@ -104,9 +116,44 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Customer getCustomer(String customerId) throws StripeException {
+    public PaymentIntent sellerPayment(CardPayment cardPayment) throws StripeException {
         Stripe.apiKey = secretKey;
-        Customer customer = Customer.retrieve(customerId);
-        return customer;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", (long) (20000.00 * 100));
+        params.put("currency", "USD");
+        params.put("description", "Seller Approval Payment");
+
+        // Set up payment method
+        // card number 4242424242424242 succeeds while
+        Map<String, Object> paymentMethodParams = new HashMap<>();
+
+                paymentMethodParams.put("type", "card");
+                paymentMethodParams.put("card[number]", cardPayment.getCardNumber());
+                paymentMethodParams.put("card[exp_month]", cardPayment.getExpMonth());
+                paymentMethodParams.put("card[exp_year]", cardPayment.getExpYear());
+                paymentMethodParams.put("card[cvc]", cardPayment.getCvc());
+                params.put("payment_method", PaymentMethod.create(paymentMethodParams).getId());
+
+
+        // Create payment intent
+        PaymentIntent paymentIntent = PaymentIntent.create(params);
+        System.out.println("PaymentIntent created: " + paymentIntent);
+
+        // Confirm payment intent
+        PaymentIntentConfirmParams confirmParams = new PaymentIntentConfirmParams.Builder()
+                .setPaymentMethod(paymentIntent.getPaymentMethod())
+                .build();
+        try {
+            paymentIntent.confirm(confirmParams);
+            paymentIntent.setStatus("succeeded");
+            System.out.println("PaymentIntent confirmed: " + paymentIntent);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return paymentIntent;
+
     }
+
+
 }

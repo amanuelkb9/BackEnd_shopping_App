@@ -1,6 +1,9 @@
 package edu.miu.shopmartbackend.service;
 
+import edu.miu.shopmartbackend.model.Invoice;
+import edu.miu.shopmartbackend.model.dto.PaymentDto;
+
 public interface InvoiceService {
 
-   double payToOrder(double totalPrice);
+   Invoice payToOrder(PaymentDto paymentDto);
 }
