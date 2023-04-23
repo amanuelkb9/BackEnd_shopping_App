@@ -58,8 +58,10 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalOrderPrice(totalPrice);
         // Save the order
         orderRepo.save(order);
+
         paymentDto.setAmount(totalPrice);
         paymentDto.setOrder_Id(order.getId());
+        paymentDto.setName(buyer.getFirstname() + " " + buyer.getLastname());
         // Handle payment
         PaymentIntent paymentIntent = paymentService.handlePayment(paymentDto);
         // Check payment status

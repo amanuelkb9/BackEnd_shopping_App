@@ -9,5 +9,5 @@ public interface PaymentService {
     Customer createCustomer(PaymentDto PaymentDto) throws StripeException;
     PaymentIntent handlePayment(PaymentDto paymentDto) throws StripeException;
 
-    Customer getCustomer(String customerId) throws StripeException;
+
 }

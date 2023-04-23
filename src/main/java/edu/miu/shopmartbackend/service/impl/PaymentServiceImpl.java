@@ -7,7 +7,9 @@ import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.PaymentIntentConfirmParams;
 import edu.miu.shopmartbackend.model.Payment;
 import edu.miu.shopmartbackend.model.dto.PaymentDto;
+import edu.miu.shopmartbackend.model.dto.UserDto;
 import edu.miu.shopmartbackend.repo.PaymentRepository;
+import edu.miu.shopmartbackend.repo.UserRepo;
 import edu.miu.shopmartbackend.service.PaymentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Value("${stripe.apiKey}")
     private String secretKey;
-
+    @Autowired
+    private UserRepo userRepo;
 
 
     @Override
@@ -62,8 +65,9 @@ public class PaymentServiceImpl implements PaymentService {
         params.put("customerId", paymentDto.getBuyer_id());
         params.put("order", paymentDto.getOrder_Id());
         params.put("description", "Order Payment");
-
+        Customer customer = Customer.create(params);
         // Set up payment method
+        // card number 4242424242424242 succeeds while
         Map<String, Object> paymentMethodParams = new HashMap<>();
         switch (paymentDto.getType()) {
             case "card":
@@ -103,10 +107,5 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentIntent;
     }
 
-    @Override
-    public Customer getCustomer(String customerId) throws StripeException {
-        Stripe.apiKey = secretKey;
-        Customer customer = Customer.retrieve(customerId);
-        return customer;
-    }
+
 }

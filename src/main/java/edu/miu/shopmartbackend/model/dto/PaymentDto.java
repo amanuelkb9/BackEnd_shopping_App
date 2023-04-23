@@ -15,8 +15,6 @@ public class PaymentDto {
     private long buyer_id;
     private long order_Id;
     private String name;
-    private Address address;
-
     @Email
     private String email;
     private Double amount;
@@ -28,6 +26,5 @@ public class PaymentDto {
     private Integer exp_month;
     private Integer exp_year;
     private String cvc;
-    private String token;
 
 }
