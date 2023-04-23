@@ -62,11 +62,17 @@ public class PaymentServiceImpl implements PaymentService {
         Map<String, Object> params = new HashMap<>();
         params.put("amount", (long) (paymentDto.getAmount() * 100));
         params.put("currency", paymentDto.getCurrency());
-        params.put("CustomerName", paymentDto.getName());
-        params.put("customerId", paymentDto.getBuyer_id());
-        params.put("order", paymentDto.getOrder_Id());
+
         params.put("description", "Order Payment");
-        Customer customer = Customer.create(params);
+
+
+        Map<String, Object> params2 = new HashMap<>();
+
+
+
+        Customer customer = createCustomer(paymentDto);
+
+
         // Set up payment method
         // card number 4242424242424242 succeeds while
         Map<String, Object> paymentMethodParams = new HashMap<>();
@@ -91,6 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         // Create payment intent
         PaymentIntent paymentIntent = PaymentIntent.create(params);
+        paymentIntent.setCustomer(customer.getId());
         System.out.println("PaymentIntent created: " + paymentIntent);
 
         // Confirm payment intent
@@ -115,9 +122,8 @@ public class PaymentServiceImpl implements PaymentService {
         Map<String, Object> params = new HashMap<>();
         params.put("amount", (long) (20000.00 * 100));
         params.put("currency", "USD");
-        params.put("CustomerName", "New Seller");
         params.put("description", "Seller Approval Payment");
-        Customer customer = Customer.create(params);
+
         // Set up payment method
         // card number 4242424242424242 succeeds while
         Map<String, Object> paymentMethodParams = new HashMap<>();
