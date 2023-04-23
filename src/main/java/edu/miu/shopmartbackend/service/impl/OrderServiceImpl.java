@@ -53,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setOrderStatus(OrderStatus.ORDERED);
         order.setOrderDate(LocalDate.now());
-        order.setShoppingCart(shoppingCart);
+
         order.setBuyer(buyer);
         order.setTotalOrderPrice(totalPrice);
         // Save the order
@@ -69,9 +69,16 @@ public class OrderServiceImpl implements OrderService {
         System.out.println(paymentIntent.getStatus());
         System.out.println("1111111111111111111111111111111");
         if ("succeeded".equals(paymentIntent.getStatus())) {
+            for(Product prod: shoppingCart.getProducts()){
+                prod.setPurchased(true);
+            }
+            order.setShoppingCart(shoppingCart);
             order.setOrderStatus(OrderStatus.PAID);
+
             Order savedOrder = orderRepo.save(order);
             Invoice invoice = invoiceService.payToOrder(paymentDto);
+
+
             return modelMapper.map(savedOrder, OrderDto.class);
         } else {
             throw new IllegalStateException("Payment failed");
