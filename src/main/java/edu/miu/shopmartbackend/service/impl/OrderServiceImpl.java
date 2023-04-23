@@ -9,6 +9,7 @@ import edu.miu.shopmartbackend.model.dto.OrderDto;
 import edu.miu.shopmartbackend.model.dto.PaymentDto;
 import edu.miu.shopmartbackend.repo.OrderRepo;
 import edu.miu.shopmartbackend.repo.UserRepo;
+import edu.miu.shopmartbackend.service.EmailSenderService;
 import edu.miu.shopmartbackend.service.InvoiceService;
 import edu.miu.shopmartbackend.service.OrderService;
 import edu.miu.shopmartbackend.service.PaymentService;
@@ -37,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     PaymentService paymentService;
+
+    @Autowired
+    EmailSenderService emailSenderService;
     @Override
     public OrderDto placeOrder(PaymentDto paymentDto) throws StripeException {
         // Find buyer by ID and check if it exists
@@ -52,6 +56,7 @@ public class OrderServiceImpl implements OrderService {
         // Create order object
         Order order = new Order();
         order.setOrderStatus(OrderStatus.ORDERED);
+        //send email - ordered
         order.setOrderDate(LocalDate.now());
         order.setShoppingCart(shoppingCart);
         order.setBuyer(buyer);
@@ -69,8 +74,11 @@ public class OrderServiceImpl implements OrderService {
         if ("succeeded".equals(paymentIntent.getStatus())) {
             order.setOrderStatus(OrderStatus.PAID);
             Order savedOrder = orderRepo.save(order);
+            //send email - payment successful
+            emailSenderService.sendPaymentConfirmationEmail(paymentDto.getEmail(), paymentDto);
             return modelMapper.map(savedOrder, OrderDto.class);
         } else {
+            //send email- payment failed
             throw new IllegalStateException("Payment failed");
         }
     }
@@ -215,6 +223,7 @@ public class OrderServiceImpl implements OrderService {
         orders.setShoppingCart(shoppingCart);
 
         if (orders.getOrderStatus() == OrderStatus.ORDERED) {
+            //send email
             orders.setOrderStatus(OrderStatus.CANCELLED);
         }
         return modelMapper.map(orderRepo.save(orders), OrderDto.class);
