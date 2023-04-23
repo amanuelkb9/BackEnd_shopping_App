@@ -5,6 +5,8 @@ import edu.miu.shopmartbackend.model.Role;
 import edu.miu.shopmartbackend.model.dto.UsernamePassDto;
 import edu.miu.shopmartbackend.service.ProductService;
 import edu.miu.shopmartbackend.service.UserService;
+import edu.miu.shopmartbackend.util.ReportMapper;
+import org.mapstruct.factory.Mappers;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-@ComponentScan("edu.miu.shopmartbackend.util")
+//@ComponentScan("edu.miu.shopmartbackend.util")
 public class Application {
 
     public static void main(String[] args) {
@@ -27,10 +29,15 @@ public class Application {
         return new ModelMapper();
     }
 
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+//    @Bean
+//    public ReportMapper reportMapper() {
+//        return Mappers.getMapper(ReportMapper.class);
+//    }
 
     @Bean
     CommandLineRunner runner(UserService userService, ProductService productService) {

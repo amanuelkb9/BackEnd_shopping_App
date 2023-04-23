@@ -4,6 +4,7 @@ import edu.miu.shopmartbackend.model.Report;
 import edu.miu.shopmartbackend.model.dto.ReportDto;
 import edu.miu.shopmartbackend.service.ReportService;
 import edu.miu.shopmartbackend.util.ReportMapper;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,17 +17,18 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reports")
+@RequiredArgsConstructor
 public class ReportController {
     private ReportService reportService;
     private ReportMapper reportMapper;
 
-    @Autowired
+
     public ReportController(ReportService reportService, ReportMapper reportMapper) {
         this.reportService = reportService;
         this.reportMapper = reportMapper;
     }
 
-    @Autowired
+
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
     }
@@ -67,7 +69,6 @@ public class ReportController {
         ReportDto savedReportDto = reportMapper.toReportDto(savedReport);
         return ResponseEntity.ok(savedReportDto);
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<ReportDto> updateReport(@PathVariable Long id, @RequestBody ReportDto reportDto) {
         Report updatedReport = reportService.updateReport(id, reportDto);

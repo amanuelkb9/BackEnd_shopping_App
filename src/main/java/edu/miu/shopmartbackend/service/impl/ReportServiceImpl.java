@@ -7,6 +7,7 @@ import edu.miu.shopmartbackend.model.dto.ReportDto;
 import edu.miu.shopmartbackend.repo.ReportRepository;
 import edu.miu.shopmartbackend.service.ReportService;
 import edu.miu.shopmartbackend.util.ReportMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
     private ReportRepository reportRepository;
     private ReportMapper reportMapper;
 
-    @Autowired
+
     public ReportServiceImpl(ReportRepository reportRepository, ReportMapper reportMapper) {
         this.reportRepository = reportRepository;
         this.reportMapper = reportMapper;
