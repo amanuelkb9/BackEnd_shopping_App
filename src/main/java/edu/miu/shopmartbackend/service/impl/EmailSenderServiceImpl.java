@@ -2,6 +2,7 @@ package edu.miu.shopmartbackend.service.impl;
 
 
 import edu.miu.shopmartbackend.model.Payment;
+import edu.miu.shopmartbackend.model.dto.OrderDto;
 import edu.miu.shopmartbackend.model.dto.PaymentDto;
 import edu.miu.shopmartbackend.service.EmailSenderService;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,12 +28,14 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         this.mailSender.send(simpleMailMessage);
 
     }
+
+    //Send payment successful
     @Override
     public void sendPaymentConfirmationEmail(String recipientEmail, PaymentDto paymentDto) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(recipientEmail);
         simpleMailMessage.setSubject("Payment Confirmation");
-        simpleMailMessage.setText("Dear " + paymentDto.getName() + ",\n\n"
+        simpleMailMessage.setText("Dear " //+ paymentDto.getName() + ",\n\n"
                 + "Your payment of $" + paymentDto.getAmount() + " has been received.\n\n"
                 + "Thank you for your business.\n\n"
                 + "Sincerely,\n"
@@ -40,6 +43,34 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         mailSender.send(simpleMailMessage);
     }
 
+    //Send payment unsuccessful
+    @Override
+    public void sendPaymentFailureEmail(String recipientEmail, PaymentDto paymentDto) {
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(recipientEmail);
+        simpleMailMessage.setSubject("Payment Unsuccessful");
+        simpleMailMessage.setText("Dear " //+ paymentDto.getName() + ",\n\n"
+                + "Your payment of $" + paymentDto.getAmount() + " has not being received.\n\n"
+                + "Thank you for your business.\n\n"
+                + "Sincerely,\n"
+                + "The Company");
+        mailSender.send(simpleMailMessage);
+    }
+
+    //Send order successful
+    @Override
+    public void sendOrderConfirmationEmail(String recipientEmail, PaymentDto paymentDto) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(recipientEmail);
+        message.setSubject("Order Confirmation");
+        message.setText("Dear " + paymentDto.getBuyer_id() + ",\n\n"
+                + "Your order of " + paymentDto.getOrder_Id() + " " + paymentDto.getAmount()
+                + " has been received and is being processed.\n\n"
+                + "Thank you for your business.\n\n"
+                + "Sincerely,\n"
+                + "The Company");
+        mailSender.send(message);
+                    }
 
    }
 

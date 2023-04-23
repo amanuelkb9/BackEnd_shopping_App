@@ -9,6 +9,7 @@ import edu.miu.shopmartbackend.model.dto.OrderDto;
 import edu.miu.shopmartbackend.model.dto.PaymentDto;
 import edu.miu.shopmartbackend.repo.OrderRepo;
 import edu.miu.shopmartbackend.repo.UserRepo;
+import edu.miu.shopmartbackend.service.EmailSenderService;
 import edu.miu.shopmartbackend.service.InvoiceService;
 import edu.miu.shopmartbackend.service.OrderService;
 import edu.miu.shopmartbackend.service.PaymentService;
@@ -55,7 +56,8 @@ public class OrderServiceImpl implements OrderService {
         // Create order object
         Order order = new Order();
         order.setOrderStatus(OrderStatus.ORDERED);
-        //send email - ordered
+
+
         order.setOrderDate(LocalDate.now());
 
         order.setBuyer(buyer);
@@ -66,6 +68,10 @@ public class OrderServiceImpl implements OrderService {
         paymentDto.setAmount(totalPrice);
         paymentDto.setOrder_Id(order.getId());
         paymentDto.setName(buyer.getFirstname() + " " + buyer.getLastname());
+
+        //send email - ordered
+        emailSenderService.sendOrderConfirmationEmail("deezeray41@gmail.com", paymentDto);
+
         // Handle payment
         PaymentIntent paymentIntent = paymentService.handlePayment(paymentDto);
         // Check payment status
@@ -81,10 +87,11 @@ public class OrderServiceImpl implements OrderService {
 
             Order savedOrder = orderRepo.save(order);
             //send email - payment successful
-            emailSenderService.sendPaymentConfirmationEmail(paymentDto.getEmail(), paymentDto);
+            emailSenderService.sendPaymentConfirmationEmail("deezeray41@gmail.com", paymentDto);
             return modelMapper.map(savedOrder, OrderDto.class);
         } else {
             //send email- payment failed
+            emailSenderService.sendPaymentFailureEmail("deezeray41@gmail.com", paymentDto);
             throw new IllegalStateException("Payment failed");
         }
     }
