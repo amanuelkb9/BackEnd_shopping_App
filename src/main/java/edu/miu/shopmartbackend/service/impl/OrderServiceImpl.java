@@ -2,14 +2,11 @@ package edu.miu.shopmartbackend.service.impl;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-import edu.miu.shopmartbackend.controller.PaymentController;
-import edu.miu.shopmartbackend.controller.PaymentData;
+
 import edu.miu.shopmartbackend.enums.OrderStatus;
-import edu.miu.shopmartbackend.model.Order;
-import edu.miu.shopmartbackend.model.Product;
-import edu.miu.shopmartbackend.model.ShoppingCart;
-import edu.miu.shopmartbackend.model.User;
+import edu.miu.shopmartbackend.model.*;
 import edu.miu.shopmartbackend.model.dto.OrderDto;
+import edu.miu.shopmartbackend.model.dto.PaymentDto;
 import edu.miu.shopmartbackend.repo.OrderRepo;
 import edu.miu.shopmartbackend.repo.UserRepo;
 import edu.miu.shopmartbackend.service.InvoiceService;
@@ -41,9 +38,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     PaymentService paymentService;
     @Override
-    public OrderDto placeOrder(PaymentData paymentData) throws StripeException {
+    public OrderDto placeOrder(PaymentDto paymentDto) throws StripeException {
         // Find buyer by ID and check if it exists
-        Optional<User> buyerOpt = userRepo.findById(paymentData.getBuyer_id());
+        Optional<User> buyerOpt = userRepo.findById(paymentDto.getBuyer_id());
         if (!buyerOpt.isPresent()) {
             throw new IllegalStateException("Buyer not found");
         }
@@ -61,9 +58,10 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalOrderPrice(totalPrice);
         // Save the order
         orderRepo.save(order);
-        paymentData.setAmount(totalPrice);
+        paymentDto.setAmount(totalPrice);
+        paymentDto.setOrder_Id(order.getId());
         // Handle payment
-        PaymentIntent paymentIntent = paymentService.handlePayment(paymentData);
+        PaymentIntent paymentIntent = paymentService.handlePayment(paymentDto);
         // Check payment status
         System.out.println("1111111111111111111111111111111");
         System.out.println(paymentIntent.getStatus());
@@ -79,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
 
 
 //    @Override
-//    public OrderDto placeOrder(PaymentData paymentData) throws StripeException {
+//    public OrderDto placeOrder(PaymentDto paymentData) throws StripeException {
 //        Order order = new Order();
 //        User buyer = userRepo.findById(paymentData.getBuyer_id()).get();
 //        ShoppingCart shoppingCart = buyer.getShoppingCart();
@@ -141,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
 //        }
 //
 //        // Handle payment
-//        PaymentData paymentData = new PaymentData();
+//        PaymentDto paymentData = new PaymentDto();
 //        paymentData.setType("card");
 //        paymentData.setCardNumber("4242424242424242"); // replace with actual card number
 //        paymentData.setExp_month(12);

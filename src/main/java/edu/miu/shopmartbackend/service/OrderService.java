@@ -1,7 +1,7 @@
 package edu.miu.shopmartbackend.service;
 
 import com.stripe.exception.StripeException;
-import edu.miu.shopmartbackend.model.PaymentData;
+import edu.miu.shopmartbackend.model.dto.PaymentDto;
 import edu.miu.shopmartbackend.model.dto.OrderDto;
 
 public interface OrderService {
@@ -14,7 +14,7 @@ public interface OrderService {
 //    OrderDto deliverOrder(long orderId);
 
     OrderDto editOrder(long orderId, double discount);
-    OrderDto placeOrder (PaymentData paymentData) throws StripeException;
+    OrderDto placeOrder (PaymentDto paymentDto) throws StripeException;
 
 
 }

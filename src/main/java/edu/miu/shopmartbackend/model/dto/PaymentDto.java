@@ -1,15 +1,24 @@
-package edu.miu.shopmartbackend.model;
+package edu.miu.shopmartbackend.model.dto;
 
+import edu.miu.shopmartbackend.model.Address;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.CreditCardNumber;
 
+import javax.validation.constraints.Email;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentData {
+public class PaymentDto {
     private long buyer_id;
+    private long order_Id;
+    private String name;
+    private Address address;
+
+    @Email
+    private String email;
     private Double amount;
     private String currency;
     private String type;
