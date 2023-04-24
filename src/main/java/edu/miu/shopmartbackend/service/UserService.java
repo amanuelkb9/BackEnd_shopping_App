@@ -17,6 +17,8 @@ public interface UserService {
 
     Role saveRole(Role role);
 
+//    Role getRoleByRoleName(String roleName);
+
     void addRoleToUser(String username, String role);
 
     UserDto approveSeller(long id);
