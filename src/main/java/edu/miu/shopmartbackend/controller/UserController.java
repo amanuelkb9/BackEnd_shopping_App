@@ -58,12 +58,12 @@ public class UserController {
         return userService.saveRole(role);
     }
 
-    @PostMapping("/users")
-    @ResponseStatus(HttpStatus.OK)
-    public void addRoleToUser(@RequestBody RoleToUserDto roleToUserDto) {
-        System.out.println("add role...........");
-        userService.addRoleToUser(roleToUserDto.getUsername(), roleToUserDto.getRole());
-    }
+//    @PostMapping("/users")
+//    @ResponseStatus(HttpStatus.OK)
+//    public void addRoleToUser(@RequestBody RoleToUserDto roleToUserDto) {
+//        System.out.println("add role...........");
+//        userService.addRoleToUser(roleToUserDto.getUsername(), roleToUserDto.getRole());
+//    }
     @PostMapping("/addUser")
     public ResponseEntity<?> registerUser(@RequestBody UserDto userDto){
         System.out.println(userDto);
@@ -72,7 +72,26 @@ public class UserController {
         System.out.println(userDto);
         return new ResponseEntity(userDto, HttpStatus.CREATED);
     }
-}
+
+    @PostMapping("/addUser/{role}")
+    public String registerUserWithRole(@RequestBody UserDto userDto, @PathVariable String role){
+        System.out.println(userDto);
+//        Role role1 = new Role(null,role);
+//        userService.saveRole(role1);
+        userService.addUser(new UsernamePassDto(userDto.getUsername(),userDto.getPassword()));
+        userService.addRoleToUser( userDto.getUsername(), role);
+//         var userRole= userService.getRoleByRoleName(role);
+         UserDto registeredUser =  userService.registerUser(userDto);
+        System.out.println("registered user --- " + registeredUser );
+        UserDto userDto1 = (role.equals("buyer")) ? userService.approveBuyer(registeredUser.getId())
+                        : userService.approveSeller(registeredUser.getId());
+        System.out.println("after user registered &  aprroved --- " + userDto1 );
+//          userService.addRoleToUser(userDto.getUsername(), userRole);
+//          return new ResponseEntity("user registered successfully ", HttpStatus.CREATED);
+        return "registeredUser";
+      }
+    }
+
 
 
 

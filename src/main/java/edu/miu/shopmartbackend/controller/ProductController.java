@@ -37,11 +37,9 @@ public class ProductController {
         User seller = modelMapper.map(searchService.getUserById(seller_id), User.class);
         System.out.println("sssssssssssssssss----------"+seller_id);
         System.out.println("ppppppppppppppp=========="+productDto.toString());
-        if (seller.isAproved()) {
+            System.out.println("seller is approved-----"+productDto.toString());
             Product product = modelMapper.map(productDto, Product.class);
-            product.setSeller(seller);
             productService.saveProduct(product, seller_id);
-        }
 
     }
 

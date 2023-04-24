@@ -88,21 +88,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public Role saveRole(Role role) {
         return roleRepo.save(role);
     }
+//    @Override
+//    public Role getRoleByRoleName(String roleName) {
+//        return roleRepo.findByRole(roleName);
+//    }
 
     @Override
     public void addRoleToUser(String username, String role) {
-        log.info("adding role to user.......");
+        log.info("adding role to user......."+username+", "+role);
         User user = userRepo.findByUsername(username).get();
-
         Role role1 = roleRepo.findByRole(role);
-        user.getRoles().add(role1);
+        user.addRole(role1);
+        userRepo.save(user);
     }
 
     @Override
     public UserDto approveSeller(long id) {
         User seller = modelMapper.map(userRepo.getUserById(id), User.class);
         PaymentDto paymentDto = new PaymentDto();
-        paymentDto.setName(seller.getFirstname());
+        paymentDto.setName(seller.getFirstName());
         paymentDto.setAmount(20000.00);
         paymentDto.setBuyer_id(id);
         paymentDto.setCurrency("usd");
@@ -177,9 +181,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
             User user = modelMapper.map(userDto, User.class);
+//user.setAproved(true);
+          User savedUser =   userRepo.save(user);
 
-            userRepo.save(user);
-            return userDto;
+            return modelMapper.map(savedUser, UserDto.class);
         }
 
 

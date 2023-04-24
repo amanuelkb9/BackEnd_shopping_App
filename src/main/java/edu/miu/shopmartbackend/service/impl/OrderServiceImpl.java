@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
 
         paymentDto.setAmount(totalPrice);
         paymentDto.setOrder_Id(order.getId());
-        paymentDto.setName(buyer.getFirstname() + " " + buyer.getLastname());
+        paymentDto.setName(buyer.getFirstName()+ " " + buyer.getLastName());
 
         //send email - ordered
         emailSenderService.sendOrderConfirmationEmail("deezeray41@gmail.com", paymentDto);

@@ -56,8 +56,8 @@ public class Application {
 
             // Seller adding his products
             productService.saveProduct(new Product(null, "iPhone14", 1200, "This is iPhone14 - ProMax", false, "https://shopping-cart-product-images.s3.amazonaws.com/iphone14.jpg", null), 3);
-            productService.saveProduct(new Product(null, "iMax", 500, "T his iMax with Bass 100% Long lasting battery ", false,"https://shopping-cart-product-images.s3.amazonaws.com/iphone14.jpg", null), 3);
-            productService.saveProduct(new Product(null, "MacBook Pro", 2000, "This is MacBook Pro - 16 inch", false, "https://shopping-cart-product-images.s3.amazonaws.com/iphone14.jpg", null), 3);
+            productService.saveProduct(new Product(null, "iMax", 500, "T his iMax with Bass 100% Long lasting battery ", false,"https://shopping-cart-product-images.s3.amazonaws.com/img/iMax.jpg", null), 3);
+            productService.saveProduct(new Product(null, "MacBook-Pro 14", 2000, "This is MacBook Pro - 17 inch", false, "https://shopping-cart-product-images.s3.amazonaws.com/img/macBookPro14.jpg", null), 3);
             productService.saveProduct(new Product(null, "MacBook Air", 1500, "This is MacBook Air - 13 inch", false, "https://shopping-cart-product-images.s3.amazonaws.com/iphone14.jpg", null), 3);
 
 

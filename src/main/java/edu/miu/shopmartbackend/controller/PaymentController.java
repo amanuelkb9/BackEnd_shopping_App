@@ -32,6 +32,7 @@ public class PaymentController {
 
     @PostMapping("sellerPayment")
     public String sellerPayment(@RequestBody CardPayment cardPayment) throws StripeException {
+        System.out.println("sellerPayment-----"+cardPayment);
         return paymentService.sellerPayment(cardPayment).getStatus();
     }
 
