@@ -7,7 +7,7 @@ import edu.miu.shopmartbackend.model.dto.OrderDto;
 public interface OrderService {
 
 
-    OrderDto deliverOrder(long orderId);
+//    OrderDto deliverOrder(long orderId);
 
     OrderDto cancelOrder(long orderId);
 

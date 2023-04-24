@@ -2,14 +2,15 @@ package edu.miu.shopmartbackend.service.impl;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-
 import edu.miu.shopmartbackend.enums.OrderStatus;
-import edu.miu.shopmartbackend.model.*;
+import edu.miu.shopmartbackend.model.Order;
+import edu.miu.shopmartbackend.model.Product;
+import edu.miu.shopmartbackend.model.ShoppingCart;
+import edu.miu.shopmartbackend.model.User;
 import edu.miu.shopmartbackend.model.dto.OrderDto;
 import edu.miu.shopmartbackend.model.dto.PaymentDto;
 import edu.miu.shopmartbackend.repo.OrderRepo;
 import edu.miu.shopmartbackend.repo.UserRepo;
-import edu.miu.shopmartbackend.service.EmailSenderService;
 import edu.miu.shopmartbackend.service.InvoiceService;
 import edu.miu.shopmartbackend.service.OrderService;
 import edu.miu.shopmartbackend.service.PaymentService;
@@ -38,13 +39,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     PaymentService paymentService;
-
-    @Autowired
-    EmailSenderService emailSenderService;
     @Override
-    public OrderDto placeOrder(PaymentDto paymentDto) throws StripeException {
+    public OrderDto placeOrder(PaymentDto paymentData) throws StripeException {
         // Find buyer by ID and check if it exists
-        Optional<User> buyerOpt = userRepo.findById(paymentDto.getBuyer_id());
+        Optional<User> buyerOpt = userRepo.findById(paymentData.getBuyer_id());
         if (!buyerOpt.isPresent()) {
             throw new IllegalStateException("Buyer not found");
         }
@@ -56,49 +54,31 @@ public class OrderServiceImpl implements OrderService {
         // Create order object
         Order order = new Order();
         order.setOrderStatus(OrderStatus.ORDERED);
-
-
         order.setOrderDate(LocalDate.now());
-
+        order.setShoppingCart(shoppingCart);
         order.setBuyer(buyer);
         order.setTotalOrderPrice(totalPrice);
         // Save the order
         orderRepo.save(order);
-
-        paymentDto.setAmount(totalPrice);
-        paymentDto.setOrder_Id(order.getId());
-        paymentDto.setName(buyer.getFirstName()+ " " + buyer.getLastName());
-
-        //send email - ordered
-        emailSenderService.sendOrderConfirmationEmail("deezeray41@gmail.com", paymentDto);
-
+        paymentData.setAmount(totalPrice);
         // Handle payment
-        PaymentIntent paymentIntent = paymentService.handlePayment(paymentDto);
+        PaymentIntent paymentIntent = paymentService.handlePayment(paymentData);
         // Check payment status
         System.out.println("1111111111111111111111111111111");
         System.out.println(paymentIntent.getStatus());
         System.out.println("1111111111111111111111111111111");
         if ("succeeded".equals(paymentIntent.getStatus())) {
-            for(Product prod: shoppingCart.getProducts()){
-                prod.setPurchased(true);
-            }
-            order.setShoppingCart(shoppingCart);
             order.setOrderStatus(OrderStatus.PAID);
-
             Order savedOrder = orderRepo.save(order);
-            //send email - payment successful
-            emailSenderService.sendPaymentConfirmationEmail("deezeray41@gmail.com", paymentDto);
             return modelMapper.map(savedOrder, OrderDto.class);
         } else {
-            //send email- payment failed
-            emailSenderService.sendPaymentFailureEmail("deezeray41@gmail.com", paymentDto);
             throw new IllegalStateException("Payment failed");
         }
     }
 
 
 //    @Override
-//    public OrderDto placeOrder(PaymentDto paymentData) throws StripeException {
+//    public OrderDto placeOrder(PaymentData paymentData) throws StripeException {
 //        Order order = new Order();
 //        User buyer = userRepo.findById(paymentData.getBuyer_id()).get();
 //        ShoppingCart shoppingCart = buyer.getShoppingCart();
@@ -160,7 +140,7 @@ public class OrderServiceImpl implements OrderService {
 //        }
 //
 //        // Handle payment
-//        PaymentDto paymentData = new PaymentDto();
+//        PaymentData paymentData = new PaymentData();
 //        paymentData.setType("card");
 //        paymentData.setCardNumber("4242424242424242"); // replace with actual card number
 //        paymentData.setExp_month(12);
@@ -209,7 +189,19 @@ public class OrderServiceImpl implements OrderService {
         return orderDto;
     }
 
-
+    //    @Override
+//    public OrderDto deliverOrder(long orderId) {
+//        Order order = modelMapper.map(orderRepo.findById(orderId).get(), Order.class);
+//        if (order.getOrderStatus() == OrderStatus.SHIPPED) {
+//            order.setOrderStatus(OrderStatus.DELIVERED);
+//        }
+//        User buyer = order.getBuyer();
+//        int points = buyer.getPoints() + 10;
+//        buyer.setPoints(points);
+//        order.setBuyer(buyer);
+//        return modelMapper.map(orderRepo.save(order),OrderDto .class);
+//
+//    }
     @Override
     public OrderDto cancelOrder(long orderId) {
         Order orders = modelMapper.map(orderRepo.findById(orderId).get(), Order.class);
@@ -224,7 +216,6 @@ public class OrderServiceImpl implements OrderService {
         orders.setShoppingCart(shoppingCart);
 
         if (orders.getOrderStatus() == OrderStatus.ORDERED) {
-            //send email
             orders.setOrderStatus(OrderStatus.CANCELLED);
         }
         return modelMapper.map(orderRepo.save(orders), OrderDto.class);
