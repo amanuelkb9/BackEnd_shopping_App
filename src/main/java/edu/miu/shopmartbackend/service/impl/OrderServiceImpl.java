@@ -2,6 +2,7 @@ package edu.miu.shopmartbackend.service.impl;
 
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import edu.miu.shopmartbackend.controller.PaymentController;
 import edu.miu.shopmartbackend.controller.PaymentData;
 import edu.miu.shopmartbackend.enums.OrderStatus;
 import edu.miu.shopmartbackend.model.Order;
@@ -172,10 +173,11 @@ public class OrderServiceImpl implements OrderService {
         List<Product> products = shoppingCart.getProducts();
         if(products != null)
         products.forEach(p -> p.setPurchased(true));
-
+//
         shoppingCart.setProducts(products);
         orders.setShoppingCart(shoppingCart);
-        if (orders.getOrderStatus() == OrderStatus.PAID) {
+//        Order order = modelMapper.map(findOrderById(orderId), Order.class);
+        if (orders.getOrderStatus() == OrderStatus.ORDERED) {
             orders.setOrderStatus(OrderStatus.SHIPPED);
         }
         return modelMapper.map(orderRepo.save(orders), OrderDto.class);
@@ -183,24 +185,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto editOrder(long orderId, double discount) {
-        Order order = orderRepo.findById(orderId).get();
-        order.setTotalOrderPrice(order.getTotalOrderPrice() - discount);
-        orderRepo.save(order);
         OrderDto orderDto = modelMapper.map(orderRepo.findById(orderId).get(), OrderDto.class);
+        orderDto.setTotalOrderPrice(orderDto.getTotalOrderPrice() - discount);
         return orderDto;
     }
 
-        @Override
-    public OrderDto deliverOrder(long orderId) {
-        Order order = modelMapper.map(orderRepo.findById(orderId).get(), Order.class);
-        if (order.getOrderStatus() == OrderStatus.SHIPPED) {
-            order.setOrderStatus(OrderStatus.DELIVERED);
-        }
-        User buyer = order.getBuyer();
-        order.setBuyer(buyer);
-        return modelMapper.map(orderRepo.save(order),OrderDto .class);
-
-    }
+    //    @Override
+//    public OrderDto deliverOrder(long orderId) {
+//        Order order = modelMapper.map(orderRepo.findById(orderId).get(), Order.class);
+//        if (order.getOrderStatus() == OrderStatus.SHIPPED) {
+//            order.setOrderStatus(OrderStatus.DELIVERED);
+//        }
+//        User buyer = order.getBuyer();
+//        int points = buyer.getPoints() + 10;
+//        buyer.setPoints(points);
+//        order.setBuyer(buyer);
+//        return modelMapper.map(orderRepo.save(order),OrderDto .class);
+//
+//    }
     @Override
     public OrderDto cancelOrder(long orderId) {
         Order orders = modelMapper.map(orderRepo.findById(orderId).get(), Order.class);
@@ -214,7 +216,7 @@ public class OrderServiceImpl implements OrderService {
         shoppingCart.setProducts(products);
         orders.setShoppingCart(shoppingCart);
 
-        if (orders.getOrderStatus() == OrderStatus.PAID) {
+        if (orders.getOrderStatus() == OrderStatus.ORDERED) {
             orders.setOrderStatus(OrderStatus.CANCELLED);
         }
         return modelMapper.map(orderRepo.save(orders), OrderDto.class);

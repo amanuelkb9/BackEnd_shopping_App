@@ -5,12 +5,15 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stripe.model.PaymentIntent;
 import edu.miu.shopmartbackend.model.Role;
 import edu.miu.shopmartbackend.model.User;
+import edu.miu.shopmartbackend.model.dto.PaymentDto;
 import edu.miu.shopmartbackend.model.dto.UserDto;
 import edu.miu.shopmartbackend.model.dto.UsernamePassDto;
 import edu.miu.shopmartbackend.repo.RoleRepo;
 import edu.miu.shopmartbackend.repo.UserRepo;
+import edu.miu.shopmartbackend.service.PaymentService;
 import edu.miu.shopmartbackend.service.UserService;
 import edu.miu.shopmartbackend.util.ListMapper;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +54,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    PaymentService paymentService;
 
 
 
@@ -95,7 +101,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDto approveSeller(long id) {
         User seller = modelMapper.map(userRepo.getUserById(id), User.class);
-        seller.setAproved(true);
+        PaymentDto paymentDto = new PaymentDto();
+        paymentDto.setName(seller.getFirstname());
+        paymentDto.setAmount(20000.00);
+        paymentDto.setBuyer_id(id);
+        paymentDto.setCurrency("usd");
+        paymentDto.setCardNumber("4242424242424242");
+        paymentDto.setExp_month(12);
+        paymentDto.setExp_year(2025);
+        paymentDto.setEmail(seller.getEmail());
+        paymentDto.setType("card");
+        try {
+            PaymentIntent paymentIntent = paymentService.handlePayment(paymentDto);
+            if (("succeeded".equals(paymentIntent.getStatus()))) {
+                seller.setAproved(true);
+            } else {
+                seller.setAproved(false);
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
         return modelMapper.map(userRepo.save(seller), UserDto.class);    }
 
 

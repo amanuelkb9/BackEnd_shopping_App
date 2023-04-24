@@ -3,21 +3,19 @@ package edu.miu.shopmartbackend.service.impl;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.*;
-import com.stripe.net.RequestOptions;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.PaymentIntentConfirmParams;
-import com.stripe.param.PaymentIntentCreateParams;
-import edu.miu.shopmartbackend.controller.PaymentData;
+import edu.miu.shopmartbackend.model.CardPayment;
 import edu.miu.shopmartbackend.model.Payment;
-import edu.miu.shopmartbackend.model.dto.CustomerData;
-import edu.miu.shopmartbackend.model.dto.PaymentResponseDto;
+import edu.miu.shopmartbackend.model.dto.PaymentDto;
+import edu.miu.shopmartbackend.model.dto.UserDto;
 import edu.miu.shopmartbackend.repo.PaymentRepository;
+import edu.miu.shopmartbackend.repo.UserRepo;
 import edu.miu.shopmartbackend.service.PaymentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,108 +29,65 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    ModelMapper modelMapper;
+
     @Value("${stripe.apiKey}")
     private String secretKey;
+    @Autowired
+    private UserRepo userRepo;
 
-//    public Payment createPayment(Double amount, String currency, String token) throws StripeException {
-//        Stripe.apiKey = secretKey;
-//
-//        // create a payment intent with the provided amount and currency
-//        PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-//                .setAmount(Math.round(amount * 100))
-//                .setCurrency(currency)
-//                //.addPaymentMethodType(PaymentMethodType.CARD)
-//                .build();
-//
-//        // confirm the payment intent with the provided payment method token
-//        PaymentIntent paymentIntent = PaymentIntent.create(params,
-//                RequestOptions.builder().setApiKey(secretKey).build());
-//        PaymentIntentConfirmParams confirmParams = PaymentIntentConfirmParams.builder()
-//                .setPaymentMethod(token)
-//                .build();
-//        paymentIntent.confirm(confirmParams);
-//
-//        // create a payment object with the Stripe payment intent ID
-//        Payment payment = new Payment();
-//        payment.setId(paymentIntent.getId());
-//
-//        return payment;
-//    }
 
     @Override
-    public Customer createCustomer(CustomerData customerData) throws StripeException {
+    public Customer createCustomer(PaymentDto paymentDto) throws StripeException {
         Stripe.apiKey = secretKey;
 
         // Create a new Customer object with the customer's name and email
         CustomerCreateParams customerParams = new CustomerCreateParams.Builder()
-                .setName(customerData.getName())
-                .setEmail(customerData.getEmail())
+                .setName(paymentDto.getName())
+                .setEmail(paymentDto.getEmail())
+                .setPaymentMethod(paymentDto.getPaymentMethodId())
                 .build();
         Customer customer = Customer.create(customerParams);
-
-        // Add the customer's card to their account
-        Map<String, Object> cardParams = new HashMap<>();
-        cardParams.put("number", customerData.getCardNumber());
-        cardParams.put("exp_month", customerData.getExp_month());
-        cardParams.put("exp_year", customerData.getExp_year());
-        cardParams.put("cvc", customerData.getCvc());
         customer.setSources(new PaymentSourceCollection());
-        System.out.println(customer);
-        Card card = (Card) customer.getSources().create(Map.of("source", cardParams));
-        System.out.println(customer);
         return customer;
     }
 
-//    @Override
-//    public PaymentIntent handlePayment(PaymentData paymentData) throws StripeException {
-//        Stripe.apiKey = secretKey;
-//
-//        // You should receive the payment method ID from the client-side
-//        PaymentResponseDto paymentResponseDto=new PaymentResponseDto();
-//        String paymentMethodId = paymentResponseDto.getPaymentId();
-//
-//
-//        // Create a PaymentIntent with the PaymentMethod ID and the amount to charge
-//        PaymentIntentCreateParams params = new PaymentIntentCreateParams.Builder()
-//                .setPaymentMethod(paymentMethodId)
-//                .setAmount((long) (paymentData.getAmount() * 100))
-//                .setCurrency(paymentData.getCurrency())
-//                .setConfirm(true) // Automatically confirm the PaymentIntent
-//                .build();
-//
-//        // Create and confirm the PaymentIntent
-//        PaymentIntent paymentIntent = PaymentIntent.create(params);
-//        System.out.println(paymentIntent);
-//
-//        // Check the PaymentIntent status
-//        System.out.println("PaymentIntent status: " + paymentIntent.getStatus());
-//
-//        return paymentIntent;
-//    }
-//}
 
-    public PaymentIntent handlePayment(PaymentData paymentData) throws StripeException {
+
+
+    public PaymentIntent handlePayment(PaymentDto paymentDto) throws StripeException {
         Stripe.apiKey = secretKey;
 
         Map<String, Object> params = new HashMap<>();
-        params.put("amount", (long) (paymentData.getAmount() * 100));
-        params.put("currency", paymentData.getCurrency());
+        params.put("amount", (long) (paymentDto.getAmount() * 100));
+        params.put("currency", paymentDto.getCurrency());
+
         params.put("description", "Order Payment");
 
+
+        Map<String, Object> params2 = new HashMap<>();
+
+
+
+        Customer customer = createCustomer(paymentDto);
+
+
         // Set up payment method
+        // card number 4242424242424242 succeeds while
         Map<String, Object> paymentMethodParams = new HashMap<>();
-        switch (paymentData.getType()) {
+        switch (paymentDto.getType()) {
             case "card":
                 paymentMethodParams.put("type", "card");
-                paymentMethodParams.put("card[number]", paymentData.getCardNumber());
-                paymentMethodParams.put("card[exp_month]", paymentData.getExp_month());
-                paymentMethodParams.put("card[exp_year]", paymentData.getExp_year());
-                paymentMethodParams.put("card[cvc]", paymentData.getCvc());
+                paymentMethodParams.put("card[number]", paymentDto.getCardNumber());
+                paymentMethodParams.put("card[exp_month]", paymentDto.getExp_month());
+                paymentMethodParams.put("card[exp_year]", paymentDto.getExp_year());
+                paymentMethodParams.put("card[cvc]", paymentDto.getCvc());
                 params.put("payment_method", PaymentMethod.create(paymentMethodParams).getId());
                 break;
 //            case "sepa_debit":
 //                paymentMethodParams.put("type", "sepa_debit");
-//                paymentMethodParams.put("sepa_debit[iban]", paymentData.getIban());
+//                paymentMethodParams.put("sepa_debit[iban]", paymentDto.getIban());
 //                params.put("payment_method_types[]", "sepa_debit");
 //                params.put("payment_method_data[sepa_debit]", paymentMethodParams);
 //                break;
@@ -142,17 +97,63 @@ public class PaymentServiceImpl implements PaymentService {
 
         // Create payment intent
         PaymentIntent paymentIntent = PaymentIntent.create(params);
+        paymentIntent.setCustomer(customer.getId());
         System.out.println("PaymentIntent created: " + paymentIntent);
 
         // Confirm payment intent
         PaymentIntentConfirmParams confirmParams = new PaymentIntentConfirmParams.Builder()
                 .setPaymentMethod(paymentIntent.getPaymentMethod())
                 .build();
-        paymentIntent.confirm(confirmParams);
-        paymentIntent.setStatus("succeeded");
-        System.out.println("PaymentIntent confirmed: " + paymentIntent);
-        System.out.println(paymentIntent);
-
+        try {
+            paymentIntent.confirm(confirmParams);
+            paymentIntent.setStatus("succeeded");
+            System.out.println("PaymentIntent confirmed: " + paymentIntent);
+            paymentRepository.save(modelMapper.map(paymentDto, Payment.class));
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
         return paymentIntent;
     }
+
+    @Override
+    public PaymentIntent sellerPayment(CardPayment cardPayment) throws StripeException {
+        Stripe.apiKey = secretKey;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", (long) (20000.00 * 100));
+        params.put("currency", "USD");
+        params.put("description", "Seller Approval Payment");
+
+        // Set up payment method
+        // card number 4242424242424242 succeeds while
+        Map<String, Object> paymentMethodParams = new HashMap<>();
+
+                paymentMethodParams.put("type", "card");
+                paymentMethodParams.put("card[number]", cardPayment.getCardNumber());
+                paymentMethodParams.put("card[exp_month]", cardPayment.getExpMonth());
+                paymentMethodParams.put("card[exp_year]", cardPayment.getExpYear());
+                paymentMethodParams.put("card[cvc]", cardPayment.getCvc());
+                params.put("payment_method", PaymentMethod.create(paymentMethodParams).getId());
+
+
+        // Create payment intent
+        PaymentIntent paymentIntent = PaymentIntent.create(params);
+        System.out.println("PaymentIntent created: " + paymentIntent);
+
+        // Confirm payment intent
+        PaymentIntentConfirmParams confirmParams = new PaymentIntentConfirmParams.Builder()
+                .setPaymentMethod(paymentIntent.getPaymentMethod())
+                .build();
+        try {
+            paymentIntent.confirm(confirmParams);
+            paymentIntent.setStatus("succeeded");
+            System.out.println("PaymentIntent confirmed: " + paymentIntent);
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        return paymentIntent;
+
+    }
+
+
 }
