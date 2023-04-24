@@ -1,27 +1,25 @@
 package edu.miu.shopmartbackend.service.impl;
 
+import java.time.LocalDate;
+import java.util.List;
 
 import edu.miu.shopmartbackend.exception.ReportNotFoundException;
 import edu.miu.shopmartbackend.model.Report;
 import edu.miu.shopmartbackend.model.dto.ReportDto;
 import edu.miu.shopmartbackend.repo.ReportRepository;
 import edu.miu.shopmartbackend.service.ReportService;
-import edu.miu.shopmartbackend.util.ReportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Service
 public class ReportServiceImpl implements ReportService {
     private ReportRepository reportRepository;
-    private ReportMapper reportMapper;
+    //private ReportMapper reportMapper;
 
     @Autowired
-    public ReportServiceImpl(ReportRepository reportRepository, ReportMapper reportMapper) {
+    public ReportServiceImpl(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
-        this.reportMapper = reportMapper;
+
     }
     @Override
     public List<Report> getAllReports() {
@@ -38,9 +36,14 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.findByReportTypeAndDate(reportType, date);
     }
 
+//    public Report createReport(ReportDto reportDto) {
+//        Report report = new Report();
+//        reportMapper.toReport(reportDto, report);
+//        return reportRepository.save(report);
+//    }
+
     public Report createReport(ReportDto reportDto) {
-        Report report = new Report();
-        reportMapper.toReport(reportDto, report);
+        Report report = reportDto.toReport();
         return reportRepository.save(report);
     }
 
