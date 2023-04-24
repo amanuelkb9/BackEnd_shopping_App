@@ -37,7 +37,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void saveProduct(Product product, long seller_id) {
-        System.out.println("service-----------------"+product.toString());
+//        System.out.println("service-----------------"+product.toString());
+        User seller = userRepo.findById(seller_id).get();
+        product.setSeller(seller);
          productRepo.save(product);
     }
 

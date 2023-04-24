@@ -16,14 +16,14 @@ import java.util.List;
 @Data
 public class UserDto {
 
-    @JsonProperty("user_id")
+//    @JsonProperty("user_id")
     private Long id;
 
-    @JsonProperty("f_name")
-    private String firstname;
+//    @JsonProperty("f_name")
+    private String firstName;
 
-    @JsonProperty("l_name")
-    private String lastname;
+//    @JsonProperty("l_name")
+    private String lastName;
 
     @Column(nullable=false)
     @NotNull(message = "* userName is required")

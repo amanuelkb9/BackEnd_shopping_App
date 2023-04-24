@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,8 +17,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
 
     private String username;
 
@@ -61,7 +62,8 @@ public class User {
     @OneToMany(mappedBy = "seller")
     private List<Product> products;
 
-
-
-
+public void addRole (Role role){
+    roles = new ArrayList<>();
+    roles.add(role);
+   }
 }
