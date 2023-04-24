@@ -1,3 +1,7 @@
-FROM fabric8/java-centos-openjdk11-jre
-ADD target/shopmart-backend-0.0.1-SNAPSHOT.jar /home/
-CMD ["java","-jar","/home/shopmart-backend-0.0.1-SNAPSHOT.jar"]
+#start with base image containing Java runtime
+FROM openjdk:11-jre
+#Make port 7070 available to the world outside this container
+EXPOSE 8080
+ADD target/backend-shopping-app.jar backend-shopping-app.jar
+#Run the jar file
+ENTRYPOINT ["java","-jar","backend-shopping-app.jar"]

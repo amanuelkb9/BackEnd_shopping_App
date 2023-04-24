@@ -14,10 +14,10 @@ services:
       timeout: 5s
       retries: 5
 
-  shopmart-backend:
+  online-shopping-cart-backend:
     depends_on:
       - postgres_db
-    image: sekayasin/shopmart-backend:v1
+    image: backend-shopping-app.jar
     restart: on-failure
     ports:
       - "8080:8080"
@@ -34,12 +34,12 @@ services:
         "server.error.include-message":"always"
       }'
 
-  shopmart-frontend:
-    depends_on:
-      - postgres_db
-      - shopmart-backend
-    image: sekayasin/shopmart-frontend:v1
-    restart: on-failure
-    ports:
-      - 80:80
+#  online-shopping-app-frontend:
+#    depends_on:
+#      - postgres_db
+#      - shopmart-backend
+#    image:
+#    restart: on-failure
+#    ports:
+#      - 80:80
 
