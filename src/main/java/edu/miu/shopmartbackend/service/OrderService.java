@@ -7,11 +7,11 @@ import edu.miu.shopmartbackend.model.dto.OrderDto;
 public interface OrderService {
 
 
+    OrderDto deliverOrder(long orderId);
+
     OrderDto cancelOrder(long orderId);
 
     OrderDto shipOrder(long orderId);
-
-//    OrderDto deliverOrder(long orderId);
 
     OrderDto editOrder(long orderId, double discount);
     OrderDto placeOrder (PaymentData paymentData) throws StripeException;
